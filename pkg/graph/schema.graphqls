@@ -1,0 +1,31 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Execution {
+  id: ID!
+  language: String!
+  code: String!
+}
+
+type ExecutionResult {
+  compilationResult: String!
+  finished: Boolean!
+  error: Boolean!
+}
+
+type Query {
+  GetExecutions: [Execution]
+  GetExecution(id:ID!): Execution
+  GetExecutionStatus(id:ID!): ExecutionResult
+}
+
+input NewExecution {
+  language: String!
+  code: String!
+}
+
+type Mutation {
+  runExecution(input: NewExecution!): Execution!
+}
