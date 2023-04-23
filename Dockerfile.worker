@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1
-
-FROM golang:1.19.3
+FROM golang:1.19.3 AS builder
 
 WORKDIR /app
 
@@ -15,16 +14,11 @@ COPY . .
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o temporal-worker ./cmd/worker/main.go
 
-# Compilers
-# Check for latest version here: https://jdk.java.net
-RUN set -xe && \
-    curl -fSsL "https://download.java.net/java/GA/jdk13.0.1/cec27d702aa74d5a8630c65ae61e4305/9/GPL/openjdk-13.0.1_linux-x64_bin.tar.gz" -o /tmp/openjdk13.tar.gz && \
-    mkdir /usr/local/openjdk13 && \
-    tar -xf /tmp/openjdk13.tar.gz -C /usr/local/openjdk13 --strip-components=1 && \
-    rm /tmp/openjdk13.tar.gz && \
-    ln -s /usr/local/openjdk13/bin/javac /usr/local/bin/javac && \
-    ln -s /usr/local/openjdk13/bin/java /usr/local/bin/java && \
-    ln -s /usr/local/openjdk13/bin/jar /usr/local/bin/jar
+FROM judge0/compilers:latest AS executor
+
+WORKDIR /app
+
+COPY --from=builder /app/temporal-worker .
 
 # Run
 CMD ["./temporal-worker"]
