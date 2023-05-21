@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/dgozalo/aec-remote-executor/pkg/compiler"
 	"github.com/dgozalo/aec-remote-executor/pkg/database"
+	"github.com/dgozalo/aec-remote-executor/pkg/service"
 	"go.temporal.io/sdk/client"
 	"log"
 	"net/http"
@@ -34,10 +35,13 @@ func RunServer() {
 	}
 	defer c.Close()
 
-	inMemory := database.NewInMemoryDBAccess()
+	pg, err := database.NewPostgresDBAccess()
+	if err != nil {
+		log.Fatalln("unable to obtain database client")
+	}
 	temporalCompiler := compiler.NewTemporalCompiler(c)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		ExecutionStore:   inMemory,
+		ExecutionService: service.NewExecutionService(pg),
 		TemporalCompiler: temporalCompiler,
 	}}))
 

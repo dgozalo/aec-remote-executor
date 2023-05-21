@@ -6,56 +6,60 @@ package graph
 
 import (
 	"context"
-	"github.com/pkg/errors"
-
+	"fmt"
 	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
-	models "github.com/dgozalo/aec-remote-executor/pkg/model"
+	"github.com/pkg/errors"
 )
 
 // RunExecution is the resolver for the runExecution field.
 func (r *mutationResolver) RunExecution(ctx context.Context, input model.NewExecution) (*model.Execution, error) {
 	temporalExec := r.TemporalCompiler.RunCompileWorker(input)
 
-	internalExec := models.InternalExecution{
-		Language:   input.Language,
-		Code:       input.Code,
-		WorkflowID: temporalExec.WorkflowID,
-		RunID:      temporalExec.RunID,
-	}
-
-	exec, err := r.ExecutionStore.CreateExecution(&internalExec)
+	execution, err := r.ExecutionService.CreateExecution(input, temporalExec)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not store the execution in the database")
+		return nil, errors.Wrap(err, "there was a problem creating an execution")
 	}
 
-	return exec, nil
+	return &model.Execution{
+		ID:       fmt.Sprint(execution.ExecutionID),
+		Language: execution.Language,
+		Code:     execution.Code,
+	}, nil
 }
 
 // GetExecutions is the resolver for the GetExecutions field.
 func (r *queryResolver) GetExecutions(ctx context.Context) ([]*model.Execution, error) {
-	execs, err := r.ExecutionStore.GetAll()
+	dbExecs, err := r.ExecutionService.GetExecutions()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not retrieve all the executions from the database")
+		return nil, errors.Wrap(err, "there was a problem getting executions froem the database")
 	}
-	return execs, nil
+	var executions []*model.Execution
+	for _, execution := range dbExecs {
+		executions = append(executions, &model.Execution{
+			ID:       fmt.Sprint(execution.ExecutionID),
+			Language: execution.Language,
+			Code:     execution.Code,
+		})
+	}
+	return executions, nil
 }
 
 // GetExecution is the resolver for the GetExecution field.
 func (r *queryResolver) GetExecution(ctx context.Context, id string) (*model.Execution, error) {
-	exec, err := r.ExecutionStore.GetOne(id)
+	execution, err := r.ExecutionService.GetExecution(id)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not retrieve an execution from the database")
+		return nil, errors.Wrap(err, "there was a problem obtaining a single execution from the database")
 	}
 	return &model.Execution{
 		ID:       id,
-		Language: exec.Language,
-		Code:     exec.Code,
+		Language: execution.Language,
+		Code:     execution.Code,
 	}, nil
 }
 
 // GetExecutionStatus is the resolver for the GetExecutionStatus field.
 func (r *queryResolver) GetExecutionStatus(ctx context.Context, id string) (*model.ExecutionResult, error) {
-	exec, err := r.ExecutionStore.GetOne(id)
+	exec, err := r.ExecutionService.GetExecution(id)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not retrieve an execution from the database")
 	}
