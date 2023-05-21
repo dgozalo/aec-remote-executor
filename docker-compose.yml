@@ -9,8 +9,49 @@ services:
     depends_on:
     - worker
     - temporalite
+    - migrate
     ports:
       - "8080:8080"
+
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/migrations:/migrations
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=aec_executor_dev
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  migrate:
+    image: migrate/migrate:latest
+    profiles: ["tools"]
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=aec_executor_dev
+    volumes:
+      - ./db/migrations:/migrations
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://postgres:postgres@db:5432/aec_executor_dev?sslmode=disable",
+        "-verbose"
+      ]
+    command: ["up"]
+    depends_on:
+      db:
+        condition: service_healthy
 
   worker:
     build:
@@ -25,3 +66,9 @@ services:
     build: "https://github.com/temporalio/temporalite.git"
     ports:
       - "8233"
+volumes:
+  postgres_data:
+
+
+
+
