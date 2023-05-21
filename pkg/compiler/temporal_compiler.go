@@ -3,8 +3,8 @@ package compiler
 import (
 	"context"
 	"fmt"
+	dbmodels "github.com/dgozalo/aec-remote-executor/pkg/database/model"
 	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
-	models "github.com/dgozalo/aec-remote-executor/pkg/model"
 	"github.com/dgozalo/aec-remote-executor/pkg/worker"
 	"github.com/pkg/errors"
 	v1 "go.temporal.io/api/enums/v1"
@@ -44,7 +44,7 @@ func (c TemporalCompiler) RunCompileWorker(execution model.NewExecution) Tempora
 	}
 }
 
-func (c TemporalCompiler) GetCompilationStatus(execution *models.InternalExecution) (*model.ExecutionResult, error) {
+func (c TemporalCompiler) GetCompilationStatus(execution *dbmodels.Execution) (*model.ExecutionResult, error) {
 	ctx := context.Background()
 	dwf, err := c.TemporalClient.DescribeWorkflowExecution(ctx, execution.WorkflowID, execution.RunID)
 	if err != nil {
