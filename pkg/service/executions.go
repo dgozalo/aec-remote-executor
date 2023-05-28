@@ -51,7 +51,7 @@ func (e ExecutionService) GetExecution(id string) (*dbmodels.Execution, error) {
 		return nil, errors.Wrap(err, "there was an error parsing the execution ID")
 	}
 	execution := dbmodels.Execution{
-		ExecutionID: int32(i64Id),
+		ID: int32(i64Id),
 	}
 	result := e.DB.First(&execution)
 	if result.Error != nil {

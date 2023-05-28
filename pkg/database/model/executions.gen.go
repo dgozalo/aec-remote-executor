@@ -4,16 +4,25 @@
 
 package model
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 const TableNameExecution = "executions"
 
 // Execution mapped from table <executions>
 type Execution struct {
-	ExecutionID  int32  `gorm:"column:execution_id;primaryKey;autoIncrement:true" json:"execution_id"`
-	Language     string `gorm:"column:language" json:"language"`
-	WorkflowID   string `gorm:"column:workflow_id" json:"workflow_id"`
-	RunID        string `gorm:"column:run_id" json:"run_id"`
-	Code         string `gorm:"column:code" json:"code"`
-	AssignmentID int32  `gorm:"column:assignment_id" json:"assignment_id"`
+	ID           int32          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	Language     string         `gorm:"column:language" json:"language"`
+	WorkflowID   string         `gorm:"column:workflow_id" json:"workflow_id"`
+	RunID        string         `gorm:"column:run_id" json:"run_id"`
+	Code         string         `gorm:"column:code" json:"code"`
+	AssignmentID int32          `gorm:"column:assignment_id" json:"assignment_id"`
+	CreatedAt    time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt    time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt    gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 // TableName Execution's table name

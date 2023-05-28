@@ -4,50 +4,62 @@ CREATE SCHEMA IF NOT EXISTS AEC_EXECUTOR;
 
 CREATE TABLE Professors
 (
-    professor_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
-    email VARCHAR(255) UNIQUE
+    email VARCHAR(255) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 -- Alumni table
 
 CREATE TABLE Alumni
 (
-    alumni_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     email VARCHAR(255) UNIQUE,
-    graduation_year INT
+    graduation_year INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 -- Subjects table
 
 CREATE TABLE Subjects
 (
-    subject_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     subject_name VARCHAR(100),
     semester INT,
-    professor_id INT REFERENCES Professors(professor_id) ON DELETE CASCADE
+    professor_id INT REFERENCES Professors(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 -- Assignments table
 
 CREATE TABLE Assignments
 (
-    assignment_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     assignment_title VARCHAR(100),
     assignment_description TEXT,
-    subject_id INT REFERENCES Subjects(subject_id) ON DELETE CASCADE,
-    professor_id INT REFERENCES Professors(professor_id) ON DELETE CASCADE
+    subject_id INT REFERENCES Subjects(id) ON DELETE CASCADE,
+    professor_id INT REFERENCES Professors(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
 -- Alumni_Subjects table
 
 CREATE TABLE Alumni_Subjects
 (
-    alumni_id INT REFERENCES Alumni(alumni_id) ON DELETE CASCADE,
-    subject_id INT REFERENCES Subjects(subject_id) ON DELETE CASCADE,
+    alumni_id INT REFERENCES Alumni(id) ON DELETE CASCADE,
+    subject_id INT REFERENCES Subjects(id) ON DELETE CASCADE,
     PRIMARY KEY (alumni_id, subject_id)
 );
 
@@ -55,8 +67,8 @@ CREATE TABLE Alumni_Subjects
 
 CREATE TABLE Alumni_Assignments
 (
-    alumni_id INT REFERENCES Alumni(alumni_id) ON DELETE CASCADE,
-    assignment_id INT REFERENCES Assignments(assignment_id) ON DELETE CASCADE,
+    alumni_id INT REFERENCES Alumni(id) ON DELETE CASCADE,
+    assignment_id INT REFERENCES Assignments(id) ON DELETE CASCADE,
     grade VARCHAR(2),
     PRIMARY KEY (alumni_id, assignment_id)
 );
@@ -65,10 +77,13 @@ CREATE TABLE Alumni_Assignments
 
 CREATE TABLE Executions
 (
-    execution_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     language VARCHAR(50),
     workflow_id VARCHAR(50),
     run_id VARCHAR(50),
     code TEXT,
-    assignment_id INT REFERENCES Assignments(assignment_id) ON DELETE CASCADE
+    assignment_id INT REFERENCES Assignments(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
 );

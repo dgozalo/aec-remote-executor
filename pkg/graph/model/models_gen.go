@@ -2,6 +2,25 @@
 
 package model
 
+type Alumni struct {
+	ID             string        `json:"id"`
+	FirstName      string        `json:"first_name"`
+	LastName       string        `json:"last_name"`
+	Email          string        `json:"email"`
+	GraduationYear string        `json:"graduation_year"`
+	Subjects       []*Subject    `json:"subjects,omitempty"`
+	Assignments    []*Assignment `json:"assignments,omitempty"`
+}
+
+type Assignment struct {
+	ID          string     `json:"id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	Subject     *Subject   `json:"subject"`
+	Professor   *Professor `json:"professor"`
+	Alumni      []*Alumni  `json:"alumni,omitempty"`
+}
+
 type Execution struct {
 	ID       string `json:"id"`
 	Language string `json:"language"`
@@ -17,4 +36,21 @@ type ExecutionResult struct {
 type NewExecution struct {
 	Language string `json:"language"`
 	Code     string `json:"code"`
+}
+
+type Professor struct {
+	ID          string        `json:"id"`
+	FirstName   string        `json:"first_name"`
+	LastName    string        `json:"last_name"`
+	Email       string        `json:"email"`
+	Subjects    []*Subject    `json:"subjects,omitempty"`
+	Assignments []*Assignment `json:"assignments,omitempty"`
+}
+
+type Subject struct {
+	ID          string        `json:"id"`
+	Name        string        `json:"name"`
+	Semester    int           `json:"semester"`
+	Professor   *Professor    `json:"professor"`
+	Assignments []*Assignment `json:"assignments,omitempty"`
 }
