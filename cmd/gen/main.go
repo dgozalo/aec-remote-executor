@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gen"
+	"gorm.io/gen/field"
 	"gorm.io/gorm"
 	"log"
 )
@@ -19,11 +21,23 @@ func main() {
 	}
 	g.UseDB(db)
 	g.ModelPkgPath = "pkg/database/model"
-	g.GenerateModel("alumni")
-	g.GenerateModel("professors")
+	g.GenerateModel("alumni", gen.FieldRelateModel(field.Many2Many, "Subjects", model.Subject{}, &field.RelateConfig{
+		GORMTag: map[string]string{
+			"many2many": "alumni_subjects",
+		},
+	}))
+	g.GenerateModel("professors", gen.FieldRelateModel(field.HasMany, "Subjects", model.Subject{}, &field.RelateConfig{
+		GORMTag: map[string]string{
+			"foreignKey": "professor_id",
+		},
+	}))
 	g.GenerateModel("assignments")
 	g.GenerateModel("executions")
-	g.GenerateModel("subjects")
+	g.GenerateModel("subjects", gen.FieldRelateModel(field.HasMany, "Assignments", model.Assignment{}, &field.RelateConfig{
+		GORMTag: map[string]string{
+			"foreignKey": "subject_id",
+		},
+	}))
 	g.GenerateModel("alumni_assignments")
 	g.GenerateModel("alumni_subjects")
 

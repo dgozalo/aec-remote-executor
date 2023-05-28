@@ -4,14 +4,24 @@
 
 package model
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 const TableNameProfessor = "professors"
 
 // Professor mapped from table <professors>
 type Professor struct {
-	ProfessorID int32  `gorm:"column:professor_id;primaryKey;autoIncrement:true" json:"professor_id"`
-	FirstName   string `gorm:"column:first_name" json:"first_name"`
-	LastName    string `gorm:"column:last_name" json:"last_name"`
-	Email       string `gorm:"column:email" json:"email"`
+	ID        int32          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	FirstName string         `gorm:"column:first_name" json:"first_name"`
+	LastName  string         `gorm:"column:last_name" json:"last_name"`
+	Email     string         `gorm:"column:email" json:"email"`
+	CreatedAt time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
+	Subjects  []Subject      `gorm:"foreignKey:professor_id" json:"subjects"`
 }
 
 // TableName Professor's table name

@@ -41,8 +41,9 @@ func RunServer() {
 	}
 	temporalCompiler := compiler.NewTemporalCompiler(c)
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		ExecutionService: service.NewExecutionService(pg),
-		TemporalCompiler: temporalCompiler,
+		ExecutionService:  service.NewExecutionService(pg),
+		ManagementService: service.NewManagementService(pg),
+		TemporalCompiler:  temporalCompiler,
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

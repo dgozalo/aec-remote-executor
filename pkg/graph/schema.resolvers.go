@@ -6,9 +6,11 @@ package graph
 
 import (
 	"context"
-	"fmt"
-	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
 	"github.com/pkg/errors"
+
+	"fmt"
+
+	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
 )
 
 // RunExecution is the resolver for the runExecution field.
@@ -21,7 +23,7 @@ func (r *mutationResolver) RunExecution(ctx context.Context, input model.NewExec
 	}
 
 	return &model.Execution{
-		ID:       fmt.Sprint(execution.ExecutionID),
+		ID:       fmt.Sprint(execution.ID),
 		Language: execution.Language,
 		Code:     execution.Code,
 	}, nil
@@ -36,7 +38,7 @@ func (r *queryResolver) GetExecutions(ctx context.Context) ([]*model.Execution, 
 	var executions []*model.Execution
 	for _, execution := range dbExecs {
 		executions = append(executions, &model.Execution{
-			ID:       fmt.Sprint(execution.ExecutionID),
+			ID:       fmt.Sprint(execution.ID),
 			Language: execution.Language,
 			Code:     execution.Code,
 		})
@@ -69,6 +71,146 @@ func (r *queryResolver) GetExecutionStatus(ctx context.Context, id string) (*mod
 		return nil, errors.Wrap(err, "there was a problem obtaining the Temporal execution result")
 	}
 	return result, nil
+}
+
+// GetAlumni is the resolver for the GetAlumni field.
+func (r *queryResolver) GetAlumni(ctx context.Context) ([]*model.Alumni, error) {
+	alumnus, err := r.ManagementService.GetAlumnus()
+	if err != nil {
+		return nil, errors.Wrap(err, "there was a problem getting alumni from the database")
+	}
+	var alumni []*model.Alumni
+	for _, alumnus := range alumnus {
+		alum := &model.Alumni{
+			ID:        fmt.Sprint(alumnus.ID),
+			FirstName: alumnus.FirstName,
+			LastName:  alumnus.LastName,
+			Email:     alumnus.Email,
+		}
+		alum.Subjects = make([]*model.Subject, 0)
+		for _, s := range alumnus.Subjects {
+			alum.Subjects = append(alum.Subjects, &model.Subject{
+				ID:       fmt.Sprint(s.ID),
+				Name:     s.SubjectName,
+				Semester: int(s.Semester),
+			})
+		}
+		alumni = append(alumni, alum)
+	}
+	return alumni, nil
+}
+
+// GetAlumnus is the resolver for the GetAlumnus field.
+func (r *queryResolver) GetAlumnus(ctx context.Context, id string) (*model.Alumni, error) {
+	alum, err := r.ManagementService.GetAlum(id)
+	if err != nil {
+		return nil, errors.Wrap(err, "there was a problem getting an alumnus from the database")
+	}
+	var subjects []*model.Subject
+	alumnus := &model.Alumni{
+		ID:             fmt.Sprint(alum.ID),
+		FirstName:      alum.FirstName,
+		LastName:       alum.LastName,
+		Email:          alum.Email,
+		GraduationYear: string(alum.GraduationYear),
+	}
+	for _, s := range alum.Subjects {
+		subjects = append(subjects, &model.Subject{
+			ID:       fmt.Sprint(s.ID),
+			Name:     s.SubjectName,
+			Semester: int(s.Semester),
+		})
+	}
+	alumnus.Subjects = subjects
+	return alumnus, nil
+}
+
+// GetProfessors is the resolver for the GetProfessors field.
+func (r *queryResolver) GetProfessors(ctx context.Context) ([]*model.Professor, error) {
+	professors, err := r.ManagementService.GetProfessors()
+	if err != nil {
+		return nil, errors.Wrap(err, "there was a problem getting professors from the database")
+	}
+	var profs []*model.Professor
+	for _, professor := range professors {
+		pr := &model.Professor{
+			ID:        fmt.Sprint(professor.ID),
+			FirstName: professor.FirstName,
+			LastName:  professor.LastName,
+			Email:     professor.Email,
+		}
+		for _, s := range professor.Subjects {
+			pr.Subjects = append(pr.Subjects, &model.Subject{
+				ID:       fmt.Sprint(s.ID),
+				Name:     s.SubjectName,
+				Semester: int(s.Semester),
+			})
+		}
+		profs = append(profs, pr)
+	}
+	return profs, nil
+}
+
+// GetProfessor is the resolver for the GetProfessor field.
+func (r *queryResolver) GetProfessor(ctx context.Context, id string) (*model.Professor, error) {
+	pr, err := r.ManagementService.GetProfessor(id)
+	if err != nil {
+		return nil, errors.Wrap(err, "there was a problem getting a professor from the database")
+	}
+	professor := &model.Professor{
+		ID:        fmt.Sprint(pr.ID),
+		FirstName: pr.FirstName,
+		LastName:  pr.LastName,
+		Email:     pr.Email,
+	}
+	for _, s := range pr.Subjects {
+		professor.Subjects = append(professor.Subjects, &model.Subject{
+			ID:       fmt.Sprint(s.ID),
+			Name:     s.SubjectName,
+			Semester: int(s.Semester),
+		})
+	}
+	return professor, nil
+}
+
+// GetSubjects is the resolver for the GetSubjects field.
+func (r *queryResolver) GetSubjects(ctx context.Context) ([]*model.Subject, error) {
+	subjects, err := r.ManagementService.GetSubjects()
+	if err != nil {
+		return nil, errors.Wrap(err, "there was a problem getting subjects from the database")
+	}
+	var subs []*model.Subject
+	for _, subject := range subjects {
+		s := &model.Subject{
+			ID:       fmt.Sprint(subject.ID),
+			Name:     subject.SubjectName,
+			Semester: int(subject.Semester),
+		}
+		for _, a := range subject.Assignments {
+			s.Assignments = append(s.Assignments, &model.Assignment{
+				ID:          fmt.Sprint(a.ID),
+				Title:       a.AssignmentTitle,
+				Description: a.AssignmentDescription,
+			})
+		}
+		subs = append(subs, s)
+	}
+	return subs, nil
+}
+
+// GetSubject is the resolver for the GetSubject field.
+func (r *queryResolver) GetSubject(ctx context.Context, id string) (*model.Subject, error) {
+	panic(fmt.Errorf("not implemented: GetSubject - GetSubject"))
+}
+
+// GetAssignments is the resolver for the GetAssignments field.
+func (r *queryResolver) GetAssignments(ctx context.Context) ([]*model.Assignment, error) {
+	panic(fmt.Errorf("not implemented: GetAssignments - GetAssignments"))
+}
+
+// GetAssignment is the resolver for the GetAssignment field.
+func (r *queryResolver) GetAssignment(ctx context.Context, id string) (*model.Assignment, error) {
+	panic(fmt.Errorf("not implemented: GetAssignment - GetAssignment"))
 }
 
 // Mutation returns MutationResolver implementation.

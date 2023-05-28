@@ -15,10 +15,54 @@ type ExecutionResult {
   error: Boolean!
 }
 
+type Alumni {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  graduation_year: String!
+  subjects: [Subject]
+  assignments: [Assignment]
+}
+
+type Professor {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  subjects: [Subject]
+  assignments: [Assignment]
+}
+
+type Subject {
+  id: ID!
+  name: String!
+  semester: Int!
+  professor: Professor!
+  assignments: [Assignment]
+}
+
+type Assignment {
+  id: ID!
+  title: String!
+  description: String!
+  subject: Subject!
+  professor: Professor!
+  alumni: [Alumni]
+}
+
 type Query {
   GetExecutions: [Execution]
   GetExecution(id:ID!): Execution
   GetExecutionStatus(id:ID!): ExecutionResult
+  GetAlumni: [Alumni]
+  GetAlumnus(id:ID!): Alumni
+  GetProfessors: [Professor]
+  GetProfessor(id:ID!): Professor
+  GetSubjects: [Subject]
+  GetSubject(id:ID!): Subject
+  GetAssignments: [Assignment]
+  GetAssignment(id:ID!): Assignment
 }
 
 input NewExecution {

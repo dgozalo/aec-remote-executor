@@ -4,15 +4,25 @@
 
 package model
 
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
 const TableNameAlumni = "alumni"
 
 // Alumni mapped from table <alumni>
 type Alumni struct {
-	AlumniID       int32  `gorm:"column:alumni_id;primaryKey;autoIncrement:true" json:"alumni_id"`
-	FirstName      string `gorm:"column:first_name" json:"first_name"`
-	LastName       string `gorm:"column:last_name" json:"last_name"`
-	Email          string `gorm:"column:email" json:"email"`
-	GraduationYear int32  `gorm:"column:graduation_year" json:"graduation_year"`
+	ID             int32          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	FirstName      string         `gorm:"column:first_name" json:"first_name"`
+	LastName       string         `gorm:"column:last_name" json:"last_name"`
+	Email          string         `gorm:"column:email" json:"email"`
+	GraduationYear int32          `gorm:"column:graduation_year" json:"graduation_year"`
+	CreatedAt      time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt      time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
+	Subjects       []Subject      `gorm:"many2many:alumni_subjects" json:"subjects"`
 }
 
 // TableName Alumni's table name
