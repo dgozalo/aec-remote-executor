@@ -115,11 +115,20 @@ func (r *queryResolver) GetAlumnus(ctx context.Context, id string) (*model.Alumn
 		GraduationYear: string(alum.GraduationYear),
 	}
 	for _, s := range alum.Subjects {
-		subjects = append(subjects, &model.Subject{
+		gqlSubject := &model.Subject{
 			ID:       fmt.Sprint(s.ID),
 			Name:     s.SubjectName,
 			Semester: int(s.Semester),
-		})
+		}
+		for _, a := range s.Assignments {
+			gqlAssignment := &model.Assignment{
+				ID:          fmt.Sprint(a.ID),
+				Title:       a.AssignmentTitle,
+				Description: a.AssignmentDescription,
+			}
+			gqlSubject.Assignments = append(gqlSubject.Assignments, gqlAssignment)
+		}
+		subjects = append(subjects, gqlSubject)
 	}
 	alumnus.Subjects = subjects
 	return alumnus, nil

@@ -35,7 +35,12 @@ const ALUM_QUERY = gql`
         subjects {
           id,
           name,
-          semester
+          semester,
+          assignments {
+            id,
+            title,
+            description,
+          }
         }
     }
   }
@@ -55,7 +60,7 @@ function SubjectsOverview({stateChanger, ...rest}) {
             <MDBox p={2}>
                 {data.GetAlumnus.subjects.map((subject) => (
                     <MDBox p={0} onClick={() => {
-                        stateChanger(subject.name);
+                        stateChanger(subject);
                     }}>
                         <TimelineItem
                             color="light"
