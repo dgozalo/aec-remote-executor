@@ -17,5 +17,14 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
+# Goland .idea files
+.idea
+
+# Generated frontend files
+frontend/node_modules
+frontend/build
+frontend/yarn.lock
+
+
 # Go workspace file
 go.work

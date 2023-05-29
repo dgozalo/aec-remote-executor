@@ -1,0 +1,17 @@
+# syntax=docker/dockerfile:1
+
+# build step
+FROM node:16.13.2-alpine as buildstep
+
+WORKDIR /frontend
+COPY frontend/ ./
+RUN yarn install
+RUN yarn build
+
+# release step
+FROM node:16.13.2-alpine as build
+COPY --from=buildstep frontend/build build/
+RUN yarn global add serve
+
+EXPOSE 3000
+CMD ["serve", "-s", "/build"]

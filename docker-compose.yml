@@ -13,6 +13,15 @@ services:
     ports:
       - "8080:8080"
 
+  frontend:
+    build:
+      dockerfile: Dockerfile.frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
   db:
     image: postgres:latest
     restart: always
@@ -30,6 +39,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   migrate:
     image: migrate/migrate:latest
     profiles: ["tools"]
