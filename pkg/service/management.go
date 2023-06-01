@@ -34,7 +34,7 @@ func (m ManagementService) GetAlum(id string) (*dbmodels.Alumni, error) {
 	alum := &dbmodels.Alumni{
 		ID: int32(i64Id),
 	}
-	result := m.DB.Preload("Subjects").Preload("Subjects.Assignments").Find(&alum)
+	result := m.DB.Preload("Subjects").Preload("Subjects.Assignments").Preload("Subjects.Assignments.Examples").Find(&alum)
 	if result.Error != nil {
 		return nil, errors.Wrap(result.Error, "could not retrieve all the executions from the database")
 	}
@@ -67,7 +67,7 @@ func (m ManagementService) GetProfessor(id string) (*dbmodels.Professor, error) 
 
 func (m ManagementService) GetSubjects() ([]dbmodels.Subject, error) {
 	var subjects []dbmodels.Subject
-	result := m.DB.Preload("Assignments").Find(&subjects)
+	result := m.DB.Preload("Assignments").Preload("Assignments.Examples").Find(&subjects)
 	if result.Error != nil {
 		return nil, errors.Wrap(result.Error, "could not retrieve all the executions from the database")
 	}

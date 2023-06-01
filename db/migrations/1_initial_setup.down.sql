@@ -1,8 +1,9 @@
+DROP TABLE execution_results;
 DROP TABLE Executions;
 DROP TABLE Alumni_Assignments;
 DROP TABLE Alumni_Subjects;
+DROP TaBLE Alumni;
+DROP TABLE Assignment_Examples;
 DROP TABLE Assignments;
 DROP TABLE Subjects;
-DROP TaBLE Alumni;
 DROP TABLE Professors;
-

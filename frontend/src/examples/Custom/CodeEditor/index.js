@@ -15,7 +15,7 @@ import MDTypography from "../../../components/MDTypography";
 
 const javascriptDefault = `// some comment`;
 
-function CodeEditor() {
+function CodeEditor({assignment}) {
     const [code, setCode] = useState(javascriptDefault);
     const [customInput, setCustomInput] = useState("");
     const [outputDetails, setOutputDetails] = useState(null);

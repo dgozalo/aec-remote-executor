@@ -40,6 +40,11 @@ const ALUM_QUERY = gql`
             id,
             title,
             description,
+            assignment_examples {
+              id,
+              title,
+              description
+            }
           }
         }
     }
