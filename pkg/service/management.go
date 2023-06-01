@@ -34,7 +34,7 @@ func (m ManagementService) GetAlum(id string) (*dbmodels.Alumni, error) {
 	alum := &dbmodels.Alumni{
 		ID: int32(i64Id),
 	}
-	result := m.DB.Preload("Subjects").Find(&alum)
+	result := m.DB.Preload("Subjects").Preload("Subjects.Assignments").Find(&alum)
 	if result.Error != nil {
 		return nil, errors.Wrap(result.Error, "could not retrieve all the executions from the database")
 	}

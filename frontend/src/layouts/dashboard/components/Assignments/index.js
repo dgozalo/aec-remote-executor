@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import {useEffect, useState} from "react";
+import {useState} from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -29,8 +29,7 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import data from "layouts/dashboard/components/Assignments/data";
-import {shallowEqual, useSelector} from "react-redux";
+import buildAssignmentsTable from "./data";
 
 function AssignmentsDashboardTable({subject}) {
   const [menu, setMenu] = useState(null);
@@ -77,7 +76,7 @@ function AssignmentsDashboardTable({subject}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>3 {subject} assignments done  </strong> this month
+              &nbsp;<strong>3 {subject.name} assignments done  </strong> this month
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -90,7 +89,7 @@ function AssignmentsDashboardTable({subject}) {
       </MDBox>
       <MDBox>
         <DataTable
-          table={data(subject)}
+          table={buildAssignmentsTable(subject)}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder

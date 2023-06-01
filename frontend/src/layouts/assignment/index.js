@@ -19,31 +19,31 @@ import Grid from "@mui/material/Grid";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 
-// Material Dashboard 2 React example components
+// Material Dashboard 2 React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import MasterCard from "examples/Cards/MasterCard";
+import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
-// Dashboard components
-import AssignmentsDashboardTable from "layouts/dashboard/components/Assignments";
-import SubjectsOverview from "layouts/dashboard/components/SubjectsOverview";
-import {useState} from "react";
+// AssignmentInstructions page components
+import AssignmentInstructions from "./components/AssignmentInstructions";
+import CodeEditor from "../../examples/Custom/CodeEditor";
 
-function Dashboard() {
-    const [subject, setSubject] = useState({});
+function Assignments() {
 
-    return (
+  return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox py={3}>
-        <MDBox>
+      <DashboardNavbar absolute isMini />
+      <MDBox mt={8}>
+        <MDBox mb={3}>
           <Grid container spacing={3}>
-              <Grid item xs={12} md={6} lg={2}>
-                  <SubjectsOverview stateChanger={setSubject} />
+              <Grid item xs={5} md={5}>
+                  <AssignmentInstructions />
               </Grid>
-            <Grid item xs={12} md={6} lg={10}>
-              <AssignmentsDashboardTable subject={subject} />
-            </Grid>
+              <Grid item xs={5} md={7}>
+                  <CodeEditor />
+              </Grid>
           </Grid>
         </MDBox>
       </MDBox>
@@ -52,4 +52,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Assignments;
