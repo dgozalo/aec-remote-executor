@@ -29,8 +29,17 @@ import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 // AssignmentInstructions page components
 import AssignmentInstructions from "./components/AssignmentInstructions";
 import CodeEditor from "../../examples/Custom/CodeEditor";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function Assignments() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    //if the state is null, then the user has not selected an assignment and should be redirected to the dashboard
+    if (location.state == null) {
+        navigate('/dashboard', {replace: true});
+    }
+    console.log(location.state);
 
   return (
     <DashboardLayout>
@@ -39,10 +48,10 @@ function Assignments() {
         <MDBox mb={3}>
           <Grid container spacing={3}>
               <Grid item xs={5} md={5}>
-                  <AssignmentInstructions />
+                  <AssignmentInstructions assignment={location.state} />
               </Grid>
               <Grid item xs={5} md={7}>
-                  <CodeEditor />
+                  <CodeEditor assignment={location.state}/>
               </Grid>
           </Grid>
         </MDBox>

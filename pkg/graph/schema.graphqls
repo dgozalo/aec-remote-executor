@@ -46,9 +46,16 @@ type Assignment {
   id: ID!
   title: String!
   description: String!
+  assignment_examples: [AssignmentExample]
   subject: Subject!
   professor: Professor!
   alumni: [Alumni]
+}
+
+type AssignmentExample {
+  id: ID!
+  title: String!
+  description: String!
 }
 
 type Query {

@@ -13,12 +13,19 @@ type Alumni struct {
 }
 
 type Assignment struct {
-	ID          string     `json:"id"`
-	Title       string     `json:"title"`
-	Description string     `json:"description"`
-	Subject     *Subject   `json:"subject"`
-	Professor   *Professor `json:"professor"`
-	Alumni      []*Alumni  `json:"alumni,omitempty"`
+	ID                 string               `json:"id"`
+	Title              string               `json:"title"`
+	Description        string               `json:"description"`
+	AssignmentExamples []*AssignmentExample `json:"assignment_examples,omitempty"`
+	Subject            *Subject             `json:"subject"`
+	Professor          *Professor           `json:"professor"`
+	Alumni             []*Alumni            `json:"alumni,omitempty"`
+}
+
+type AssignmentExample struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
 type Execution struct {

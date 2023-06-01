@@ -6,9 +6,8 @@ package graph
 
 import (
 	"context"
-	"github.com/pkg/errors"
-
 	"fmt"
+	"github.com/pkg/errors"
 
 	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
 )
@@ -125,6 +124,14 @@ func (r *queryResolver) GetAlumnus(ctx context.Context, id string) (*model.Alumn
 				ID:          fmt.Sprint(a.ID),
 				Title:       a.AssignmentTitle,
 				Description: a.AssignmentDescription,
+			}
+			for _, e := range a.Examples {
+				gqlExample := &model.AssignmentExample{
+					ID:          fmt.Sprint(e.ID),
+					Title:       e.ExampleTitle,
+					Description: e.ExampleDescription,
+				}
+				gqlAssignment.AssignmentExamples = append(gqlAssignment.AssignmentExamples, gqlExample)
 			}
 			gqlSubject.Assignments = append(gqlSubject.Assignments, gqlAssignment)
 		}

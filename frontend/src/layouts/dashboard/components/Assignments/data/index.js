@@ -20,7 +20,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 // Images
@@ -41,15 +41,15 @@ export default function buildAssignmentsTable(subject) {
 
     const navigate = useNavigate();
 
-    let handleNavigate = (assignmentId) => {
-        navigate("/assignment?id=" + assignmentId)
+    let handleNavigate = (assignment) => {
+        navigate("/assignment", {state: assignment})
     }
     if (subject.assignments == null) {
         return {
             columns: [
-                { Header: "Assignment", accessor: "companies", width: "45%", align: "left" },
-                { Header: "Completion", accessor: "completion", align: "center" },
-                { Header: "action", accessor: "action", align: "center" }
+                {Header: "Assignment", accessor: "companies", width: "45%", align: "left"},
+                {Header: "Completion", accessor: "completion", align: "center"},
+                {Header: "action", accessor: "action", align: "center"}
             ],
             rows: []
         }
@@ -57,9 +57,9 @@ export default function buildAssignmentsTable(subject) {
 
         return {
             columns: [
-                { Header: "Assignment", accessor: "companies", width: "45%", align: "left" },
-                { Header: "Completion", accessor: "completion", align: "center" },
-                { Header: "action", accessor: "action", align: "center" }
+                {Header: "Assignment", accessor: "companies", width: "45%", align: "left"},
+                {Header: "Completion", accessor: "completion", align: "center"},
+                {Header: "action", accessor: "action", align: "center"}
             ],
             rows: subject.assignments.map((assignment) => (
                 {
@@ -74,7 +74,7 @@ export default function buildAssignmentsTable(subject) {
                         </MDBox>
                     ),
                     action: (
-                        <MDTypography component="a" onClick={() => handleNavigate(assignment.id)} variant="caption" color="text" fontWeight="medium">
+                        <MDTypography component="a" onClick={() => handleNavigate(assignment)} variant="caption" color="text" fontWeight="medium">
                             Attempt
                         </MDTypography>
                     )
