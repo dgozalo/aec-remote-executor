@@ -11,4 +11,10 @@ export const languageOptions = [
         label: "Java 17",
         value: "java",
     },
+    {
+        id: 3,
+        name: "Python 3",
+        label: "Python 3",
+        value: "python",
+    },
 ];

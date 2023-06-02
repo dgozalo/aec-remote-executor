@@ -14,15 +14,16 @@ const TableNameAssignment = "assignments"
 
 // Assignment mapped from table <assignments>
 type Assignment struct {
-	ID                    int32               `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	AssignmentTitle       string              `gorm:"column:assignment_title" json:"assignment_title"`
-	AssignmentDescription string              `gorm:"column:assignment_description" json:"assignment_description"`
-	SubjectID             int32               `gorm:"column:subject_id" json:"subject_id"`
-	ProfessorID           int32               `gorm:"column:professor_id" json:"professor_id"`
-	CreatedAt             time.Time           `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt             time.Time           `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
-	DeletedAt             gorm.DeletedAt      `gorm:"column:deleted_at" json:"deleted_at"`
-	Examples              []AssignmentExample `gorm:"foreignKey:assignment_id" json:"examples"`
+	ID                    int32                    `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	AssignmentTitle       string                   `gorm:"column:assignment_title" json:"assignment_title"`
+	AssignmentDescription string                   `gorm:"column:assignment_description" json:"assignment_description"`
+	SubjectID             int32                    `gorm:"column:subject_id" json:"subject_id"`
+	ProfessorID           int32                    `gorm:"column:professor_id" json:"professor_id"`
+	CreatedAt             time.Time                `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt             time.Time                `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt             gorm.DeletedAt           `gorm:"column:deleted_at" json:"deleted_at"`
+	Examples              []AssignmentExample      `gorm:"foreignKey:assignment_id" json:"examples"`
+	CodeTemplates         []AssignmentCodeTemplate `gorm:"foreignKey:assignment_id" json:"code_templates"`
 }
 
 // TableName Assignment's table name
