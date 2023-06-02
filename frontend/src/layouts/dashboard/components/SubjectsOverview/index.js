@@ -24,6 +24,7 @@ import MDTypography from "components/MDTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 import {gql, useQuery} from "@apollo/client";
 
+//TODO: Parametrize this query
 const ALUM_QUERY = gql`
   {
     GetAlumnus(id: "1"){
@@ -44,6 +45,11 @@ const ALUM_QUERY = gql`
               id,
               title,
               description
+            },
+            assignment_code_templates {
+              id,
+              language,
+              code
             }
           }
         }

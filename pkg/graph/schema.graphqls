@@ -47,6 +47,7 @@ type Assignment {
   title: String!
   description: String!
   assignment_examples: [AssignmentExample]
+  assignment_code_templates: [AssignmentCodeTemplate]
   subject: Subject!
   professor: Professor!
   alumni: [Alumni]
@@ -56,6 +57,12 @@ type AssignmentExample {
   id: ID!
   title: String!
   description: String!
+}
+
+type AssignmentCodeTemplate {
+  id: ID!
+  language: String!
+  code: String!
 }
 
 type Query {

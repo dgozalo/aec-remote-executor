@@ -32,7 +32,12 @@ func main() {
 		},
 	}))
 	g.GenerateModel("assignment_examples")
+	g.GenerateModel("assignment_code_templates")
 	g.GenerateModel("assignments", gen.FieldRelateModel(field.HasMany, "Examples", model.AssignmentExample{}, &field.RelateConfig{
+		GORMTag: map[string]string{
+			"foreignKey": "assignment_id",
+		},
+	}), gen.FieldRelateModel(field.HasMany, "CodeTemplates", model.AssignmentCodeTemplate{}, &field.RelateConfig{
 		GORMTag: map[string]string{
 			"foreignKey": "assignment_id",
 		},

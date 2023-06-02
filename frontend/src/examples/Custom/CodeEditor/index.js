@@ -16,18 +16,35 @@ import MDTypography from "../../../components/MDTypography";
 const javascriptDefault = `// some comment`;
 
 function CodeEditor({assignment}) {
-    const [code, setCode] = useState(javascriptDefault);
+
+    const selectedLanguage = assignment.assignment_code_templates[0];
+
+    const [code, setCode] = useState("");
     const [customInput, setCustomInput] = useState("");
     const [outputDetails, setOutputDetails] = useState(null);
     const [processing, setProcessing] = useState(null);
     const [theme, setTheme] = useState("cobalt");
-    const [language, setLanguage] = useState(languageOptions[0]);
+    const [language, setLanguage] = useState(null);
 
     const enterPress = useKeyPress("Enter");
     const ctrlPress = useKeyPress("Control");
 
+    useEffect(() => {
+        languageOptions.filter((lang) => {
+            if (lang.value === selectedLanguage.language) {
+                setLanguage(lang);
+                setCode(selectedLanguage.code);
+            }
+        });
+    }, [selectedLanguage]);
+
     const onSelectChange = (sl) => {
-        setLanguage(sl);
+        assignment.assignment_code_templates.filter((template) => {
+            if (template.language === sl.value) {
+                setCode(template.code);
+                setLanguage(sl);
+            }
+        });
     };
 
     useEffect(() => {
@@ -37,6 +54,7 @@ function CodeEditor({assignment}) {
     }, [ctrlPress, enterPress]);
 
     const onChange = (action) => {
+        console.log("onChange", action, JSON.stringify(action, null, 2));
         setCode(action);
     }
     const handleCompile = () => {
@@ -131,9 +149,9 @@ function CodeEditor({assignment}) {
                                 height={`62vh`}
                                 width={`100%`}
                                 language={language?.value}
-                                code={code}
                                 theme={theme.value}
-                                defaultValue="// some comment"
+                                defaultValue={code}
+                                value={code}
                                 onChange={onChange}
                             />
                         </Grid>

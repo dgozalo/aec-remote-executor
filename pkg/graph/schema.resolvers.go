@@ -18,7 +18,8 @@ func (r *mutationResolver) RunExecution(ctx context.Context, input model.NewExec
 
 	execution, err := r.ExecutionService.CreateExecution(input, temporalExec)
 	if err != nil {
-		return nil, errors.Wrap(err, "there was a problem creating an execution")
+		return nil, err
+		errors.Wrap(err, "there was a problem creating an execution")
 	}
 
 	return &model.Execution{
@@ -132,6 +133,14 @@ func (r *queryResolver) GetAlumnus(ctx context.Context, id string) (*model.Alumn
 					Description: e.ExampleDescription,
 				}
 				gqlAssignment.AssignmentExamples = append(gqlAssignment.AssignmentExamples, gqlExample)
+			}
+			for _, t := range a.CodeTemplates {
+				gqlTemplate := &model.AssignmentCodeTemplate{
+					ID:       fmt.Sprint(t.ID),
+					Language: t.Language,
+					Code:     t.Code,
+				}
+				gqlAssignment.AssignmentCodeTemplates = append(gqlAssignment.AssignmentCodeTemplates, gqlTemplate)
 			}
 			gqlSubject.Assignments = append(gqlSubject.Assignments, gqlAssignment)
 		}

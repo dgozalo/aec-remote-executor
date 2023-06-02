@@ -55,13 +55,20 @@ type ComplexityRoot struct {
 	}
 
 	Assignment struct {
-		Alumni             func(childComplexity int) int
-		AssignmentExamples func(childComplexity int) int
-		Description        func(childComplexity int) int
-		ID                 func(childComplexity int) int
-		Professor          func(childComplexity int) int
-		Subject            func(childComplexity int) int
-		Title              func(childComplexity int) int
+		Alumni                  func(childComplexity int) int
+		AssignmentCodeTemplates func(childComplexity int) int
+		AssignmentExamples      func(childComplexity int) int
+		Description             func(childComplexity int) int
+		ID                      func(childComplexity int) int
+		Professor               func(childComplexity int) int
+		Subject                 func(childComplexity int) int
+		Title                   func(childComplexity int) int
+	}
+
+	AssignmentCodeTemplate struct {
+		Code     func(childComplexity int) int
+		ID       func(childComplexity int) int
+		Language func(childComplexity int) int
 	}
 
 	AssignmentExample struct {
@@ -206,6 +213,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Assignment.Alumni(childComplexity), true
 
+	case "Assignment.assignment_code_templates":
+		if e.complexity.Assignment.AssignmentCodeTemplates == nil {
+			break
+		}
+
+		return e.complexity.Assignment.AssignmentCodeTemplates(childComplexity), true
+
 	case "Assignment.assignment_examples":
 		if e.complexity.Assignment.AssignmentExamples == nil {
 			break
@@ -247,6 +261,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Assignment.Title(childComplexity), true
+
+	case "AssignmentCodeTemplate.code":
+		if e.complexity.AssignmentCodeTemplate.Code == nil {
+			break
+		}
+
+		return e.complexity.AssignmentCodeTemplate.Code(childComplexity), true
+
+	case "AssignmentCodeTemplate.id":
+		if e.complexity.AssignmentCodeTemplate.ID == nil {
+			break
+		}
+
+		return e.complexity.AssignmentCodeTemplate.ID(childComplexity), true
+
+	case "AssignmentCodeTemplate.language":
+		if e.complexity.AssignmentCodeTemplate.Language == nil {
+			break
+		}
+
+		return e.complexity.AssignmentCodeTemplate.Language(childComplexity), true
 
 	case "AssignmentExample.description":
 		if e.complexity.AssignmentExample.Description == nil {
@@ -1070,6 +1105,8 @@ func (ec *executionContext) fieldContext_Alumni_assignments(ctx context.Context,
 				return ec.fieldContext_Assignment_description(ctx, field)
 			case "assignment_examples":
 				return ec.fieldContext_Assignment_assignment_examples(ctx, field)
+			case "assignment_code_templates":
+				return ec.fieldContext_Assignment_assignment_code_templates(ctx, field)
 			case "subject":
 				return ec.fieldContext_Assignment_subject(ctx, field)
 			case "professor":
@@ -1264,6 +1301,55 @@ func (ec *executionContext) fieldContext_Assignment_assignment_examples(ctx cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Assignment_assignment_code_templates(ctx context.Context, field graphql.CollectedField, obj *model.Assignment) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Assignment_assignment_code_templates(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignmentCodeTemplates, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.AssignmentCodeTemplate)
+	fc.Result = res
+	return ec.marshalOAssignmentCodeTemplate2ᚕᚖgithubᚗcomᚋdgozaloᚋaecᚑremoteᚑexecutorᚋpkgᚋgraphᚋmodelᚐAssignmentCodeTemplate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Assignment_assignment_code_templates(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Assignment",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AssignmentCodeTemplate_id(ctx, field)
+			case "language":
+				return ec.fieldContext_AssignmentCodeTemplate_language(ctx, field)
+			case "code":
+				return ec.fieldContext_AssignmentCodeTemplate_code(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AssignmentCodeTemplate", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Assignment_subject(ctx context.Context, field graphql.CollectedField, obj *model.Assignment) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Assignment_subject(ctx, field)
 	if err != nil {
@@ -1430,6 +1516,138 @@ func (ec *executionContext) fieldContext_Assignment_alumni(ctx context.Context, 
 				return ec.fieldContext_Alumni_assignments(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Alumni", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AssignmentCodeTemplate_id(ctx context.Context, field graphql.CollectedField, obj *model.AssignmentCodeTemplate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AssignmentCodeTemplate_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AssignmentCodeTemplate_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AssignmentCodeTemplate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AssignmentCodeTemplate_language(ctx context.Context, field graphql.CollectedField, obj *model.AssignmentCodeTemplate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AssignmentCodeTemplate_language(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Language, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AssignmentCodeTemplate_language(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AssignmentCodeTemplate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AssignmentCodeTemplate_code(ctx context.Context, field graphql.CollectedField, obj *model.AssignmentCodeTemplate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AssignmentCodeTemplate_code(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Code, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AssignmentCodeTemplate_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AssignmentCodeTemplate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2167,6 +2385,8 @@ func (ec *executionContext) fieldContext_Professor_assignments(ctx context.Conte
 				return ec.fieldContext_Assignment_description(ctx, field)
 			case "assignment_examples":
 				return ec.fieldContext_Assignment_assignment_examples(ctx, field)
+			case "assignment_code_templates":
+				return ec.fieldContext_Assignment_assignment_code_templates(ctx, field)
 			case "subject":
 				return ec.fieldContext_Assignment_subject(ctx, field)
 			case "professor":
@@ -2756,6 +2976,8 @@ func (ec *executionContext) fieldContext_Query_GetAssignments(ctx context.Contex
 				return ec.fieldContext_Assignment_description(ctx, field)
 			case "assignment_examples":
 				return ec.fieldContext_Assignment_assignment_examples(ctx, field)
+			case "assignment_code_templates":
+				return ec.fieldContext_Assignment_assignment_code_templates(ctx, field)
 			case "subject":
 				return ec.fieldContext_Assignment_subject(ctx, field)
 			case "professor":
@@ -2813,6 +3035,8 @@ func (ec *executionContext) fieldContext_Query_GetAssignment(ctx context.Context
 				return ec.fieldContext_Assignment_description(ctx, field)
 			case "assignment_examples":
 				return ec.fieldContext_Assignment_assignment_examples(ctx, field)
+			case "assignment_code_templates":
+				return ec.fieldContext_Assignment_assignment_code_templates(ctx, field)
 			case "subject":
 				return ec.fieldContext_Assignment_subject(ctx, field)
 			case "professor":
@@ -3200,6 +3424,8 @@ func (ec *executionContext) fieldContext_Subject_assignments(ctx context.Context
 				return ec.fieldContext_Assignment_description(ctx, field)
 			case "assignment_examples":
 				return ec.fieldContext_Assignment_assignment_examples(ctx, field)
+			case "assignment_code_templates":
+				return ec.fieldContext_Assignment_assignment_code_templates(ctx, field)
 			case "subject":
 				return ec.fieldContext_Assignment_subject(ctx, field)
 			case "professor":
@@ -5129,6 +5355,10 @@ func (ec *executionContext) _Assignment(ctx context.Context, sel ast.SelectionSe
 
 			out.Values[i] = ec._Assignment_assignment_examples(ctx, field, obj)
 
+		case "assignment_code_templates":
+
+			out.Values[i] = ec._Assignment_assignment_code_templates(ctx, field, obj)
+
 		case "subject":
 
 			out.Values[i] = ec._Assignment_subject(ctx, field, obj)
@@ -5147,6 +5377,48 @@ func (ec *executionContext) _Assignment(ctx context.Context, sel ast.SelectionSe
 
 			out.Values[i] = ec._Assignment_alumni(ctx, field, obj)
 
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var assignmentCodeTemplateImplementors = []string{"AssignmentCodeTemplate"}
+
+func (ec *executionContext) _AssignmentCodeTemplate(ctx context.Context, sel ast.SelectionSet, obj *model.AssignmentCodeTemplate) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, assignmentCodeTemplateImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AssignmentCodeTemplate")
+		case "id":
+
+			out.Values[i] = ec._AssignmentCodeTemplate_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "language":
+
+			out.Values[i] = ec._AssignmentCodeTemplate_language(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "code":
+
+			out.Values[i] = ec._AssignmentCodeTemplate_code(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6459,6 +6731,54 @@ func (ec *executionContext) marshalOAssignment2ᚖgithubᚗcomᚋdgozaloᚋaec�
 		return graphql.Null
 	}
 	return ec._Assignment(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOAssignmentCodeTemplate2ᚕᚖgithubᚗcomᚋdgozaloᚋaecᚑremoteᚑexecutorᚋpkgᚋgraphᚋmodelᚐAssignmentCodeTemplate(ctx context.Context, sel ast.SelectionSet, v []*model.AssignmentCodeTemplate) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOAssignmentCodeTemplate2ᚖgithubᚗcomᚋdgozaloᚋaecᚑremoteᚑexecutorᚋpkgᚋgraphᚋmodelᚐAssignmentCodeTemplate(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOAssignmentCodeTemplate2ᚖgithubᚗcomᚋdgozaloᚋaecᚑremoteᚑexecutorᚋpkgᚋgraphᚋmodelᚐAssignmentCodeTemplate(ctx context.Context, sel ast.SelectionSet, v *model.AssignmentCodeTemplate) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AssignmentCodeTemplate(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOAssignmentExample2ᚕᚖgithubᚗcomᚋdgozaloᚋaecᚑremoteᚑexecutorᚋpkgᚋgraphᚋmodelᚐAssignmentExample(ctx context.Context, sel ast.SelectionSet, v []*model.AssignmentExample) graphql.Marshaler {
