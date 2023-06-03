@@ -1,22 +1,26 @@
 import React from "react";
 import MDTypography from "../../../../components/MDTypography";
+import Grid from "@mui/material/Grid";
+import DataTable from "examples/Tables/DataTable";
+import buildTestResultsTable from "./data";
 
 const OutputDetails = ({outputDetails}) => {
     return (
-        <div className="metrics-container mt-4 flex flex-col space-y-3">
+        <Grid item >
             <MDTypography variant={"caption"} component={"p"} color={"white"} fontWeight={"regular"}>
                 Status:{" "}
-                {outputDetails?.status?.description}
+                {outputDetails?.status}
             </MDTypography>
-            <MDTypography variant={"caption"} component={"p"} color={"white"} fontWeight={"regular"}>
-                Memory:{" "}
-                {outputDetails?.memory}
-            </MDTypography>
-            <MDTypography variant={"caption"} component={"p"} color={"white"} fontWeight={"regular"}>
-                Time:{" "}
-                {outputDetails?.time}
-            </MDTypography>
-        </div>
+            { outputDetails?.testResults &&
+                    <DataTable
+                        table={buildTestResultsTable(outputDetails?.testResults)}
+                        showTotalEntries={false}
+                        isSorted={false}
+                        noEndBorder
+                        entriesPerPage={false}
+                    />
+                }
+        </Grid>
     );
 };
 

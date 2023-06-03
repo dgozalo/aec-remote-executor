@@ -7,9 +7,8 @@ package graph
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-
 	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
+	"github.com/pkg/errors"
 )
 
 // RunExecution is the resolver for the runExecution field.
@@ -238,11 +237,20 @@ func (r *queryResolver) GetAssignment(ctx context.Context, id string) (*model.As
 	panic(fmt.Errorf("not implemented: GetAssignment - GetAssignment"))
 }
 
+// ExecutionStatus is the resolver for the ExecutionStatus field.
+func (r *subscriptionResolver) ExecutionStatus(ctx context.Context, id string) (<-chan *model.ExecutionResult, error) {
+	panic(fmt.Errorf("not implemented: ExecutionStatus - ExecutionStatus"))
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+// Subscription returns SubscriptionResolver implementation.
+func (r *Resolver) Subscription() SubscriptionResolver { return &subscriptionResolver{r} }
+
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type subscriptionResolver struct{ *Resolver }

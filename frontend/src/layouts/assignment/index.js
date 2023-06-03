@@ -30,10 +30,16 @@ import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 import AssignmentInstructions from "./components/AssignmentInstructions";
 import CodeEditor from "../../examples/Custom/CodeEditor";
 import {useLocation, useNavigate} from "react-router-dom";
+import OutputWindow from "../../examples/Custom/CodeEditor/components/OutputWindow";
+import OutputDetails from "../../examples/Custom/CodeEditor/components/OutputDetails";
+import Card from "@mui/material/Card";
+import {useState} from "react";
 
 function Assignments() {
     const location = useLocation();
     const navigate = useNavigate();
+    const [outputDetails, setOutputDetails] = useState(null);
+
 
     //if the state is null, then the user has not selected an assignment and should be redirected to the dashboard
     if (location.state == null) {
@@ -45,13 +51,13 @@ function Assignments() {
     <DashboardLayout>
       <DashboardNavbar absolute isMini />
       <MDBox mt={8}>
-        <MDBox mb={3}>
-          <Grid container spacing={3}>
-              <Grid item xs={5} md={5}>
+        <MDBox mb={30}>
+          <Grid container spacing={1}>
+              <Grid item xs={5} md={5} >
                   <AssignmentInstructions assignment={location.state} />
               </Grid>
-              <Grid item xs={5} md={7}>
-                  <CodeEditor assignment={location.state}/>
+              <Grid item  xs={5} md={7} >
+                  <CodeEditor assignment={location.state} setOutputDetails={setOutputDetails} outputDetails={outputDetails}/>
               </Grid>
           </Grid>
         </MDBox>

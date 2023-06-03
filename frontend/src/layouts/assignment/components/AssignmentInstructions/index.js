@@ -23,8 +23,8 @@ import MDTypography from "components/MDTypography";
 
 function AssignmentInstructions({assignment}) {
   return (
-    <Card id="delete-account">
-      <MDBox pt={3} px={2}>
+    <Card id="assignments-card">
+      <MDBox pt={1} px={2}>
           <MDTypography variant="h8" fontWeight="medium">
               Assignment: {assignment.title}
           </MDTypography>
@@ -32,16 +32,16 @@ function AssignmentInstructions({assignment}) {
           Assignment Instructions
         </MDTypography>
       </MDBox>
-      <MDBox pt={1} pb={2} px={2}>
+      <MDBox pt={1} pb={"55%"} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
             {assignment.description.split(/\r?\n/).map((line) => (
                 <>
                     <MDTypography variant="caption" component="p" color="white" fontWeight={"regular"} >
                         {line}
                     </MDTypography>
-                    <br/>
                 </>
             ))}
+            <br/>
             {assignment?.assignment_examples?.map((example) => (
                 <>
                     <MDTypography variant="h6" component="b" color="white" fontWeight={"regular"} >
