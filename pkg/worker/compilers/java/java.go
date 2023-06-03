@@ -8,13 +8,19 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"text/template"
 )
 
-//go:embed TestRunner.java
+//go:embed TestRunner.java.tmpl
 var JavaTemplateFile string
 
-func RunCompile(code string) (string, string, string, error) {
-	f, tmpDir, err := createTempJavaFile(code)
+type TemplateData struct {
+	SubmittedCode  string
+	TestRunnerCode string
+}
+
+func RunCompile(submittedCode string, testRunnerCode string) (string, string, string, error) {
+	f, tmpDir, err := createTempJavaFile(submittedCode, testRunnerCode)
 	if err != nil {
 		return "", "", "", errors.Wrap(err, "there was a problem with the temp compilation file")
 	}
@@ -59,12 +65,15 @@ func createTestReportFile(tmpDir string) (*os.File, error) {
 	return testFile, nil
 }
 
-func createTempJavaFile(code string) (*os.File, string, error) {
-	// code = string(JavaTemplateFile) + code
-
+func createTempJavaFile(submittedCode string, testRunnerCode string) (*os.File, string, error) {
 	tmpDir, err := os.MkdirTemp("", "*-aec-compiler-java")
 	if err != nil {
 		return nil, "", errors.Wrap(err, "error creating the temp dir for compilationn targets")
+	}
+
+	tmpl := template.Must(template.New("java").Parse(JavaTemplateFile))
+	if err != nil {
+		return nil, "", errors.Wrap(err, "error parsing the java template")
 	}
 
 	f, err := os.Create(filepath.Join(tmpDir, "RunnerTest.java"))
@@ -72,9 +81,13 @@ func createTempJavaFile(code string) (*os.File, string, error) {
 		return nil, "", errors.Wrap(err, "there was a problem creating the temporary java file")
 	}
 
-	_, err = f.WriteString(JavaTemplateFile)
+	err = tmpl.Execute(f, TemplateData{SubmittedCode: submittedCode, TestRunnerCode: testRunnerCode})
 	if err != nil {
-		return nil, "", errors.Wrap(err, "error writing code contents to temporary java file")
+		return nil, "", errors.Wrap(err, "error executing the java template")
 	}
+	//_, err = f.WriteString(JavaTemplateFile)
+	//if err != nil {
+	//	return nil, "", errors.Wrap(err, "error writing code contents to temporary java file")
+	//}
 	return f, tmpDir, nil
 }

@@ -1,4 +1,3 @@
-DROP TABLE execution_results;
 DROP TABLE Executions;
 DROP TABLE Alumni_Assignments;
 DROP TABLE Alumni_Subjects;

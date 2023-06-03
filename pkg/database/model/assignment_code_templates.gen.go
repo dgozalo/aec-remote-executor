@@ -14,13 +14,14 @@ const TableNameAssignmentCodeTemplate = "assignment_code_templates"
 
 // AssignmentCodeTemplate mapped from table <assignment_code_templates>
 type AssignmentCodeTemplate struct {
-	ID           int32          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	AssignmentID int32          `gorm:"column:assignment_id" json:"assignment_id"`
-	Language     string         `gorm:"column:language" json:"language"`
-	Code         string         `gorm:"column:code" json:"code"`
-	CreatedAt    time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt    time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
-	DeletedAt    gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
+	ID             int32          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	AssignmentID   int32          `gorm:"column:assignment_id" json:"assignment_id"`
+	Language       string         `gorm:"column:language" json:"language"`
+	Code           string         `gorm:"column:code" json:"code"`
+	TestRunnerCode string         `gorm:"column:test_runner_code" json:"test_runner_code"`
+	CreatedAt      time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt      time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 // TableName AssignmentCodeTemplate's table name

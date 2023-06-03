@@ -3,7 +3,8 @@ package server
 import (
 	"github.com/dgozalo/aec-remote-executor/pkg/compiler"
 	"github.com/dgozalo/aec-remote-executor/pkg/database"
-	"github.com/dgozalo/aec-remote-executor/pkg/service"
+	"github.com/dgozalo/aec-remote-executor/pkg/executions"
+	"github.com/dgozalo/aec-remote-executor/pkg/management"
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
 	"go.temporal.io/sdk/client"
@@ -54,8 +55,8 @@ func RunServer() {
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &graph.Resolver{
-			ExecutionService:  service.NewExecutionService(pg),
-			ManagementService: service.NewManagementService(pg),
+			ExecutionService:  executions.NewExecutionService(pg),
+			ManagementService: management.NewManagementService(pg),
 			TemporalCompiler:  temporalCompiler,
 		}}))
 

@@ -12,13 +12,7 @@ public class TestsRunner {
         TestsRunner runner = new TestsRunner();
         Solution solution = new Solution();
 
-        for (int i = 1; i <= 10; i++) {
-            int[] sol = solution.twoSum(new int[0], i);
-            runner.writeResultToTestsFile(testsFilePath, String.format("TestCase#%1d::%2s::%3s::%4b", i,
-                    java.util.Arrays.toString(sol),
-                    java.util.Arrays.toString(new int[]{1, 2}),
-                    java.util.Arrays.equals(sol, new int[]{1, 2})));
-        }
+        runTestCases(solution, runner, testsFilePath);
     }
 
     public void writeResultToTestsFile(String filePath, String result) {
@@ -38,12 +32,47 @@ public class TestsRunner {
             throw new RuntimeException("Error writing to file", e);
         }
     }
+
+{{ .TestRunnerCode }}
+}
+
+class Test<I, T, E> {
+    private I input;
+    private T target;
+    private E expectedOutput;
+
+    public Test(I input, T target, E expectedOutput) {
+        this.input = input;
+        this.target = target;
+        this.expectedOutput = expectedOutput;
+    }
+
+    public I getInput() {
+        return input;
+    }
+
+    public void setInput(I input) {
+        this.input = input;
+    }
+
+    public T getTarget() {
+        return target;
+    }
+
+    public void setTarget(T target) {
+        this.target = target;
+    }
+
+    public E getExpectedOutput() {
+        return expectedOutput;
+    }
+
+    public void setExpectedOutput(E expectedOutput) {
+        this.expectedOutput = expectedOutput;
+    }
 }
 
 class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        System.out.println("test");
-        return new int[]{target};
-    }
+{{ .SubmittedCode }}
 }
 

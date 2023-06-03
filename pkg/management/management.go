@@ -1,4 +1,4 @@
-package service
+package management
 
 import (
 	"github.com/dgozalo/aec-remote-executor/pkg/database"
@@ -66,6 +66,34 @@ func (m ManagementService) GetProfessor(id string) (*dbmodels.Professor, error) 
 		return nil, errors.Wrap(result.Error, "could not retrieve all the executions from the database")
 	}
 	return professor, nil
+}
+
+func (m ManagementService) GetAssignment(id string) (*dbmodels.Assignment, error) {
+	i64Id, err := strconv.ParseInt(id, 10, 32)
+	if err != nil {
+		return nil, errors.Wrap(err, "there was an error parsing the execution ID")
+	}
+	assignment := &dbmodels.Assignment{
+		ID: int32(i64Id),
+	}
+	result := m.DB.Preload("Examples").Preload("CodeTemplates").Find(&assignment)
+	if result.Error != nil {
+		return nil, errors.Wrap(result.Error, "could not retrieve all the executions from the database")
+	}
+	return assignment, nil
+}
+
+func (m ManagementService) GetAssignmentCodeTemplateForCode(assignmentID string, language string) (*dbmodels.AssignmentCodeTemplate, error) {
+	assignment, err := m.GetAssignment(assignmentID)
+	if err != nil {
+		return nil, errors.Wrap(err, "there was an error retrieving the assignment")
+	}
+	for _, codeTemplate := range assignment.CodeTemplates {
+		if codeTemplate.Language == language {
+			return &codeTemplate, nil
+		}
+	}
+	return nil, errors.New("could not find the code template for the assignment and language")
 }
 
 func (m ManagementService) GetSubjects() ([]dbmodels.Subject, error) {

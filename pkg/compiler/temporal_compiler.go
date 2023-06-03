@@ -33,7 +33,7 @@ func (c TemporalCompiler) RunCompileWorker(execution model.NewExecution) Tempora
 	}
 
 	// Start the Workflow
-	we, err := c.TemporalClient.ExecuteWorkflow(context.Background(), options, worker.ExecutionWorkflow, execution)
+	we, err := c.TemporalClient.ExecuteWorkflow(context.Background(), options, worker.ExecutionWorkflowName, execution)
 	if err != nil {
 		log.Fatalln("unable to complete Workflow", err)
 	}
@@ -71,6 +71,15 @@ func (c TemporalCompiler) GetCompilationStatus(execution *dbmodels.Execution) (*
 			Passed:   testResult.Passed,
 		})
 	}
+
+	if result.Stderr != "" {
+		return &model.ExecutionResult{
+			Stdout: result.Stdout,
+			Stderr: result.Stderr,
+			Status: model.ExecutionStatusError,
+		}, nil
+	}
+
 	return &model.ExecutionResult{
 		Stdout:      result.Stdout,
 		Stderr:      result.Stderr,
