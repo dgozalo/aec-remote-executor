@@ -94,6 +94,10 @@ type Query {
   GetAssignment(id:ID!): Assignment
 }
 
+type Subscription {
+  ExecutionStatus(id:ID!): ExecutionResult
+}
+
 input NewExecution {
   language: String!
   code: String!

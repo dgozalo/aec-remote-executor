@@ -3,34 +3,20 @@ import MDTypography from "../../../../components/MDTypography";
 
 const OutputWindow = ({ outputDetails }) => {
     const getOutput = () => {
-        let statusId = outputDetails?.status?.id;
+        let status = outputDetails?.status;
 
-        if (statusId === 6) {
+        if (status === 'ERROR') {
             // compilation error
             return (
-                <pre className="px-2 py-1 font-normal text-xs text-red-500">
-          {outputDetails?.compile_output}
-        </pre>
+                <MDTypography variant="caption" component="code" color="red" fontWeight={"regular"} >
+                    {outputDetails?.stderr}
+                </MDTypography>
             );
-        } else if (statusId === 3) {
+        } else if (status === 'COMPLETED') {
             return (
-                <pre className="px-2 py-1 font-normal text-xs text-green-500">
-          {outputDetails.stdout !== null
-              ? `${outputDetails.stdout}`
-              : null}
-        </pre>
-            );
-        } else if (statusId === 5) {
-            return (
-                <pre className="px-2 py-1 font-normal text-xs text-red-500">
-          {`Time Limit Exceeded`}
-        </pre>
-            );
-        } else {
-            return (
-                <pre className="px-2 py-1 font-normal text-xs text-red-500">
-          {outputDetails?.stderr}
-        </pre>
+                <MDTypography variant="caption" component="code" color="red" fontWeight={"regular"} >
+                    {outputDetails.stdout !== null  ? `${outputDetails.stdout}` : null}
+                </MDTypography>
             );
         }
     };
@@ -39,7 +25,8 @@ const OutputWindow = ({ outputDetails }) => {
             <MDTypography variant="h3" color="white" component="p" color="white"  >
                 Output
             </MDTypography>
-            <MDTypography variant="caption" component="code" color="white"  fontWeight={"regular"}>
+
+            <MDTypography variant="caption" component="p" color="white"  fontWeight={"regular"}>
                 {outputDetails ? <>{getOutput()}</> : null}
             </MDTypography>
         </>

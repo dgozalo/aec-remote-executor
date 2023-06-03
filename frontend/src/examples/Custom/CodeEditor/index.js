@@ -12,7 +12,8 @@ import {defineTheme} from "./lib/defineTheme";
 import OutputDetails from "./components/OutputDetails";
 import MDAlert from "../../../components/MDAlert";
 import MDTypography from "../../../components/MDTypography";
-import {gql, useMutation} from "@apollo/client";
+import {gql, useLazyQuery, useMutation} from "@apollo/client";
+import Card from "@mui/material/Card";
 
 const EXECUTION_MUTATION = gql`
     mutation runExecution($input:NewExecution!) {
@@ -24,15 +25,30 @@ const EXECUTION_MUTATION = gql`
     }
 `;
 
-function CodeEditor({assignment}) {
+const EXECUTION_QUERY = gql`
+query getExecutionStatus($id:ID!) {
+  GetExecutionStatus(id:$id) {
+    stdout,
+    stderr,
+    status,
+    testResults {
+      testName,
+      expected,
+      actual,
+      passed
+    }
+  }
+}
+`;
+
+function CodeEditor({assignment, setOutputDetails, outputDetails}) {
     const selectedLanguage = assignment?.assignment_code_templates[0];
     const [code, setCode] = useState("");
-    const [outputDetails, setOutputDetails] = useState(null);
     const [processing, setProcessing] = useState(null);
     const [theme, setTheme] = useState("cobalt");
     const [language, setLanguage] = useState(null);
     const [executeCode] = useMutation(EXECUTION_MUTATION);
-
+    const [runQuery, { called, loading, data }] = useLazyQuery(EXECUTION_QUERY)
     const enterPress = useKeyPress("Enter");
     const ctrlPress = useKeyPress("Control");
 
@@ -76,35 +92,32 @@ function CodeEditor({assignment}) {
                 }
             }
         }).then((res) => {
-            console.log("Response");
-            console.log(res)
+            checkStatus(res.data.runExecution.id)
         }).catch((err) => {
             console.log("Error");
             console.log(err)
         });
-
-        setOutputDetails({
-            status: {
-                id: 5,
-                message: "Compiling...",
-            },
-            compile_output: "asasasas",
-            stdout: "eeeee",
-            stderr: "cercrrrwe",
-            memory: "1gb",
-            time: "1s",
-        })
-
-        console.log("Compiling " + language.label + " code..." + code);
-        setTimeout(() => {
-            setProcessing(false)
-            showSuccessToast("Compiled Successfully!")
-        }, 2000)
     };
 
-    const checkStatus = async (token) => {
+    const checkStatus = (executionId) => {
         // We will come to the implementation later in the code
-        console.log("Checking status...");
+        runQuery({variables: {id: executionId}, fetchPolicy: "network-only"}).then((res) => {
+            if (res.data.GetExecutionStatus.status === "RUNNING") {
+                setTimeout(() => {
+                    checkStatus(executionId)
+                }, 1000)
+            } else {
+                setOutputDetails({
+                    status: res.data.GetExecutionStatus.status,
+                    stdout: res.data.GetExecutionStatus.stdout,
+                    stderr: res.data.GetExecutionStatus.stderr,
+                    testResults: res.data.GetExecutionStatus.testResults,
+                    memory: "1gb",
+                    time: "1s",
+                });
+                setProcessing(false)
+            }
+        });
 
     };
 
@@ -158,14 +171,11 @@ function CodeEditor({assignment}) {
         </MDTypography>
     );
     return (
-        <>
-            {outputDetails && <MDAlert color="secondary" dismissible>
-                {alertContent("secondary")}
-            </MDAlert>}
-            <MDBox>
+        <grid container spacing={3}>
+            <Grid >
                 <MDBox mb={1}>
-                    <Grid container spacing={0}>
-                        <Grid item xs={5} md={5}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={5} md={3}>
                             <LanguagesDropdown onSelectChange={onSelectChange}/>
                         </Grid>
                         <Grid item xs={5} md={7}>
@@ -173,8 +183,8 @@ function CodeEditor({assignment}) {
                         </Grid>
                         <Grid item xs={5} md={25}>
                             <Editor
-                                height={`62vh`}
-                                width={`100%`}
+                                height={`45vh`}
+                                width={`95%`}
                                 language={language?.value}
                                 theme={theme.value}
                                 defaultValue={code}
@@ -182,9 +192,8 @@ function CodeEditor({assignment}) {
                                 onChange={onChange}
                             />
                         </Grid>
-                        <Grid>
-                            <OutputWindow outputDetails={outputDetails}/>
-                            <Grid>
+                        <Grid m={1}>
+                            <Grid item mb={1}>
                                 <button
                                     onClick={handleCompile}
                                     disabled={!code}
@@ -196,12 +205,21 @@ function CodeEditor({assignment}) {
                                     {processing ? "Processing..." : "Compile and Execute"}
                                 </button>
                             </Grid>
-                            {outputDetails && <OutputDetails outputDetails={outputDetails}/>}
+                            <Grid item width={"124vh"}>
+                                <Card container id="assignments-card">
+                                    <MDBox pt={1} px={3} >
+                                        <Grid item mb={17.5}>
+                                            <OutputWindow outputDetails={outputDetails}/>
+                                            {outputDetails && <OutputDetails outputDetails={outputDetails}/>}
+                                        </Grid>
+                                    </MDBox>
+                                </Card>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </MDBox>
-            </MDBox>
-        </>
+            </Grid>
+        </grid>
 
     )
 }
