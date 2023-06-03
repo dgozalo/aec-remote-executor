@@ -1,4 +1,4 @@
-package service
+package executions
 
 import (
 	"github.com/dgozalo/aec-remote-executor/pkg/compiler"

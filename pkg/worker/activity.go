@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
+	"github.com/dgozalo/aec-remote-executor/pkg/management"
 	"github.com/dgozalo/aec-remote-executor/pkg/worker/compilers/java"
 	"github.com/pkg/errors"
 	"go.temporal.io/sdk/temporal"
@@ -11,11 +12,23 @@ import (
 	"strings"
 )
 
-func ExecutionActivity(ctx context.Context, execution model.NewExecution) (*ExecutionResult, error) {
+type Activity struct {
+	management *management.ManagementService
+}
+
+func NewActivity(management *management.ManagementService) *Activity {
+	return &Activity{management: management}
+}
+
+func (a Activity) ExecutionActivity(ctx context.Context, execution model.NewExecution) (*ExecutionResult, error) {
+	codeTemplate, err := a.management.GetAssignmentCodeTemplateForCode(execution.AssignmentID, execution.Language)
+	if err != nil {
+		return nil, temporal.NewNonRetryableApplicationError(errors.Wrap(err, "there was a problem getting the assignment").Error(), "ASSIGNMENT_NOT_FOUND", nil)
+	}
 	fmt.Printf("Compile code %s for language %s!", execution.Code, execution.Language)
 	result := &ExecutionResult{}
 	if execution.Language == "java" {
-		stdout, stderr, results, err := java.RunCompile(execution.Code)
+		stdout, stderr, results, err := java.RunCompile(execution.Code, codeTemplate.TestRunnerCode)
 		if err != nil {
 			return nil, temporal.NewNonRetryableApplicationError(errors.Wrap(err, "there was a problem running the Java compilation").Error(), "COMPILE_FAILURE", nil)
 		}
@@ -39,8 +52,8 @@ func (t *ExecutionResult) parseTestResults(rawTestResults string) {
 			}
 			testResult := TestResult{
 				TestName: chunks[0],
-				Expected: chunks[1],
-				Actual:   chunks[2],
+				Actual:   chunks[1],
+				Expected: chunks[2],
 				Passed:   passed,
 			}
 			testResults = append(testResults, testResult)

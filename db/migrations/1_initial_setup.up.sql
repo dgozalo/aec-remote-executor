@@ -60,6 +60,7 @@ CREATE TABLE Assignment_Code_Templates
     assignment_id INT REFERENCES Assignments(id) ON DELETE CASCADE,
     language VARCHAR(50),
     code TEXT,
+    test_runner_code TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP
@@ -110,18 +111,6 @@ CREATE TABLE Executions
     deleted_at TIMESTAMP
 );
 
--- Execution_Results table
-CREATE TABLE execution_results
-(
-    id SERIAL PRIMARY KEY,
-    execution_id INT REFERENCES Executions(id) ON DELETE CASCADE,
-    result TEXT,
-    errors TEXT DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP
-);
-
 -- inserts
 
 INSERT INTO alumni (first_name, last_name, email, graduation_year) VALUES ('John', 'Doe', 'john@edu.com', null);
@@ -143,11 +132,25 @@ Output: [0,1]');
 INSERT INTO Assignment_Code_Templates (assignment_id, language, code) VALUES (1, 'Python', 'class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         pass');
-INSERT INTO Assignment_Code_Templates (assignment_id, language, code) VALUES (1, 'Java', 'class Solution {
+INSERT INTO Assignment_Code_Templates (assignment_id, language, code, test_runner_code) VALUES (1, 'java', 'class Solution {
     public int[] twoSum(int[] nums, int target) {
 
     }
-}');
+}', '   public static void runTestCases(Solution solution, TestsRunner runner, String testsFilePath) {
+        java.util.List<Test<int[], Integer, int[]>> tests = java.util.List.of(
+                new Test<>(new int[]{1, 2, 3}, 1, new int[]{1, 2}),
+                new Test<>(new int[]{1, 2, 3}, 2, new int[]{1, 2}),
+                new Test<>(new int[]{1, 2, 3}, 3, new int[]{1, 2}),
+                new Test<>(new int[]{1, 2, 3}, 4, new int[]{1, 2}));
+        for (int i = 0; i < tests.size(); i++) {
+            Test<int[], Integer, int[]> test = tests.get(i);
+            int[] sol = solution.twoSum(test.getInput(), test.getTarget());
+            runner.writeResultToTestsFile(testsFilePath, String.format("TestCase#%1d::%2s::%3s::%4b", i,
+                    java.util.Arrays.toString(sol),
+                    java.util.Arrays.toString(test.getExpectedOutput()),
+                    java.util.Arrays.equals(sol, test.getExpectedOutput())));
+        }
+    }');
 INSERT INTO Assignment_Code_Templates (assignment_id, language, code) VALUES (1, 'javascript', 'var twoSum = function(nums, target) {
 
 };');
