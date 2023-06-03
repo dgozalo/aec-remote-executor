@@ -2,7 +2,6 @@ package compiler
 
 import (
 	"context"
-	"fmt"
 	dbmodels "github.com/dgozalo/aec-remote-executor/pkg/database/model"
 	"github.com/dgozalo/aec-remote-executor/pkg/graph/model"
 	"github.com/dgozalo/aec-remote-executor/pkg/worker"
@@ -53,26 +52,29 @@ func (c TemporalCompiler) GetCompilationStatus(execution *dbmodels.Execution) (*
 	finished := dwf.WorkflowExecutionInfo.Status != v1.WORKFLOW_EXECUTION_STATUS_RUNNING
 	if !finished {
 		return &model.ExecutionResult{
-			CompilationResult: "",
-			Finished:          false,
-			Error:             false,
+			Status: model.ExecutionStatusRunning,
 		}, err
 	}
 
-	var result string
+	var result worker.ExecutionResult
 	wr := c.TemporalClient.GetWorkflow(ctx, execution.WorkflowID, execution.RunID)
 	err = wr.Get(ctx, &result)
 	if err != nil {
 		return nil, errors.Wrap(err, "there was a problem obtaining the status of the current temporal execution")
 	}
+	var testResults []*model.TestResult
+	for _, testResult := range result.TestsResults {
+		testResults = append(testResults, &model.TestResult{
+			TestName: testResult.TestName,
+			Expected: testResult.Expected,
+			Actual:   testResult.Actual,
+			Passed:   testResult.Passed,
+		})
+	}
 	return &model.ExecutionResult{
-		CompilationResult: result,
-		Finished:          true,
-		Error:             false,
+		Stdout:      result.Stdout,
+		Stderr:      result.Stderr,
+		TestResults: testResults,
+		Status:      model.ExecutionStatusCompleted,
 	}, nil
-}
-
-func printResults(greeting string, workflowID, runID string) {
-	fmt.Printf("\nWorkflowID: %s RunID: %s\n", workflowID, runID)
-	fmt.Printf("\n%s\n\n", greeting)
 }

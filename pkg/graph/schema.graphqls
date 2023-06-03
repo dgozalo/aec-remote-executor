@@ -7,12 +7,27 @@ type Execution {
   id: ID!
   language: String!
   code: String!
+  assignmentId: ID!
+}
+
+enum ExecutionStatus {
+  RUNNING
+  COMPLETED
+  ERROR
 }
 
 type ExecutionResult {
-  compilationResult: String!
-  finished: Boolean!
-  error: Boolean!
+  stdout: String!
+  stderr: String!
+  testResults: [TestResult]
+  status: ExecutionStatus!
+}
+
+type TestResult {
+  testName: String!
+  expected: String!
+  actual: String!
+  passed: Boolean!
 }
 
 type Alumni {
@@ -82,6 +97,7 @@ type Query {
 input NewExecution {
   language: String!
   code: String!
+  assignmentId: ID!
 }
 
 type Mutation {
