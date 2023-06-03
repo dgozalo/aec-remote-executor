@@ -42,7 +42,7 @@ function AssignmentInstructions({assignment}) {
                     <br/>
                 </>
             ))}
-            {assignment?.assignment_examples.map((example) => (
+            {assignment?.assignment_examples?.map((example) => (
                 <>
                     <MDTypography variant="h6" component="b" color="white" fontWeight={"regular"} >
                         {example.title}

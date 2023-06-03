@@ -21,12 +21,16 @@ func NewExecutionService(db *database.PostgresDBAccess) *ExecutionService {
 }
 
 func (e ExecutionService) CreateExecution(input model.NewExecution, temporalExec compiler.TemporalExecution) (*dbmodels.Execution, error) {
+	i64Id, err := strconv.ParseInt(input.AssignmentID, 10, 32)
+	if err != nil {
+		return nil, errors.Wrap(err, "there was an error parsing the execution ID")
+	}
 	execution := dbmodels.Execution{
 		Language:     input.Language,
 		WorkflowID:   temporalExec.WorkflowID,
 		RunID:        temporalExec.RunID,
 		Code:         input.Code,
-		AssignmentID: 1,
+		AssignmentID: int32(i64Id),
 	}
 
 	result := e.DB.Clauses(clause.Returning{}).Create(&execution)

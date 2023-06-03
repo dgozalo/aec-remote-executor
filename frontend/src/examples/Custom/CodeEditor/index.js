@@ -2,7 +2,7 @@ import Editor from "@monaco-editor/react";
 import {useEffect, useState} from "react";
 import LanguagesDropdown from "./components/LanguageDropdown";
 import ThemeDropdown from "./components/ThemeDropdown";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import Grid from "@mui/material/Grid";
 import MDBox from "../../../components/MDBox";
 import OutputWindow from "./components/OutputWindow";
@@ -12,19 +12,26 @@ import {defineTheme} from "./lib/defineTheme";
 import OutputDetails from "./components/OutputDetails";
 import MDAlert from "../../../components/MDAlert";
 import MDTypography from "../../../components/MDTypography";
+import {gql, useMutation} from "@apollo/client";
 
-const javascriptDefault = `// some comment`;
+const EXECUTION_MUTATION = gql`
+    mutation runExecution($input:NewExecution!) {
+      runExecution(input:$input) {
+        id,
+        language,
+        code
+      }
+    }
+`;
 
 function CodeEditor({assignment}) {
-
-    const selectedLanguage = assignment.assignment_code_templates[0];
-
+    const selectedLanguage = assignment?.assignment_code_templates[0];
     const [code, setCode] = useState("");
-    const [customInput, setCustomInput] = useState("");
     const [outputDetails, setOutputDetails] = useState(null);
     const [processing, setProcessing] = useState(null);
     const [theme, setTheme] = useState("cobalt");
     const [language, setLanguage] = useState(null);
+    const [executeCode] = useMutation(EXECUTION_MUTATION);
 
     const enterPress = useKeyPress("Enter");
     const ctrlPress = useKeyPress("Control");
@@ -59,6 +66,23 @@ function CodeEditor({assignment}) {
     }
     const handleCompile = () => {
         setProcessing(true)
+
+        executeCode({
+            variables: {
+                input: {
+                    language: language.value,
+                    code: code,
+                    assignmentId: assignment.id
+                }
+            }
+        }).then((res) => {
+            console.log("Response");
+            console.log(res)
+        }).catch((err) => {
+            console.log("Error");
+            console.log(err)
+        });
+
         setOutputDetails({
             status: {
                 id: 5,
@@ -80,6 +104,8 @@ function CodeEditor({assignment}) {
 
     const checkStatus = async (token) => {
         // We will come to the implementation later in the code
+        console.log("Checking status...");
+
     };
 
     function handleThemeChange(th) {
@@ -90,9 +116,10 @@ function CodeEditor({assignment}) {
             defineTheme(theme.value).then((_) => setTheme(theme));
         }
     }
+
     useEffect(() => {
         defineTheme("oceanic-next").then((_) =>
-            setTheme({ value: "oceanic-next", label: "Oceanic Next" })
+            setTheme({value: "oceanic-next", label: "Oceanic Next"})
         );
     }, []);
 
@@ -139,10 +166,10 @@ function CodeEditor({assignment}) {
                 <MDBox mb={1}>
                     <Grid container spacing={0}>
                         <Grid item xs={5} md={5}>
-                            <LanguagesDropdown onSelectChange={onSelectChange} />
+                            <LanguagesDropdown onSelectChange={onSelectChange}/>
                         </Grid>
                         <Grid item xs={5} md={7}>
-                            <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
+                            <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme}/>
                         </Grid>
                         <Grid item xs={5} md={25}>
                             <Editor
@@ -155,9 +182,9 @@ function CodeEditor({assignment}) {
                                 onChange={onChange}
                             />
                         </Grid>
-                        <Grid >
-                            <OutputWindow outputDetails={outputDetails} />
-                            <Grid >
+                        <Grid>
+                            <OutputWindow outputDetails={outputDetails}/>
+                            <Grid>
                                 <button
                                     onClick={handleCompile}
                                     disabled={!code}
@@ -169,14 +196,14 @@ function CodeEditor({assignment}) {
                                     {processing ? "Processing..." : "Compile and Execute"}
                                 </button>
                             </Grid>
-                            {outputDetails && <OutputDetails outputDetails={outputDetails} />}
+                            {outputDetails && <OutputDetails outputDetails={outputDetails}/>}
                         </Grid>
                     </Grid>
                 </MDBox>
             </MDBox>
         </>
 
-            )
+    )
 }
 
 export default CodeEditor;

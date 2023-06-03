@@ -2,6 +2,12 @@
 
 package model
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
 type Alumni struct {
 	ID             string        `json:"id"`
 	FirstName      string        `json:"first_name"`
@@ -36,20 +42,23 @@ type AssignmentExample struct {
 }
 
 type Execution struct {
-	ID       string `json:"id"`
-	Language string `json:"language"`
-	Code     string `json:"code"`
+	ID           string `json:"id"`
+	Language     string `json:"language"`
+	Code         string `json:"code"`
+	AssignmentID string `json:"assignmentId"`
 }
 
 type ExecutionResult struct {
-	CompilationResult string `json:"compilationResult"`
-	Finished          bool   `json:"finished"`
-	Error             bool   `json:"error"`
+	Stdout      string          `json:"stdout"`
+	Stderr      string          `json:"stderr"`
+	TestResults []*TestResult   `json:"testResults,omitempty"`
+	Status      ExecutionStatus `json:"status"`
 }
 
 type NewExecution struct {
-	Language string `json:"language"`
-	Code     string `json:"code"`
+	Language     string `json:"language"`
+	Code         string `json:"code"`
+	AssignmentID string `json:"assignmentId"`
 }
 
 type Professor struct {
@@ -67,4 +76,54 @@ type Subject struct {
 	Semester    int           `json:"semester"`
 	Professor   *Professor    `json:"professor"`
 	Assignments []*Assignment `json:"assignments,omitempty"`
+}
+
+type TestResult struct {
+	TestName string `json:"testName"`
+	Expected string `json:"expected"`
+	Actual   string `json:"actual"`
+	Passed   bool   `json:"passed"`
+}
+
+type ExecutionStatus string
+
+const (
+	ExecutionStatusRunning   ExecutionStatus = "RUNNING"
+	ExecutionStatusCompleted ExecutionStatus = "COMPLETED"
+	ExecutionStatusError     ExecutionStatus = "ERROR"
+)
+
+var AllExecutionStatus = []ExecutionStatus{
+	ExecutionStatusRunning,
+	ExecutionStatusCompleted,
+	ExecutionStatusError,
+}
+
+func (e ExecutionStatus) IsValid() bool {
+	switch e {
+	case ExecutionStatusRunning, ExecutionStatusCompleted, ExecutionStatusError:
+		return true
+	}
+	return false
+}
+
+func (e ExecutionStatus) String() string {
+	return string(e)
+}
+
+func (e *ExecutionStatus) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ExecutionStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ExecutionStatus", str)
+	}
+	return nil
+}
+
+func (e ExecutionStatus) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
