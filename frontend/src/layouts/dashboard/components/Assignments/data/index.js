@@ -20,12 +20,13 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 
 // Images
 import TimelineItem from "examples/Timeline/TimelineItem";
-import logoGithub from "assets/images/small-logos/github.svg";
+import logoDevto from "assets/images/small-logos/devto.svg";
+
 
 export default function buildAssignmentsTable(subject) {
 
@@ -63,7 +64,7 @@ export default function buildAssignmentsTable(subject) {
             ],
             rows: subject.assignments.map((assignment) => (
                 {
-                    companies: <Assignment image={logoGithub} name={assignment.title}/>,
+                    companies: <Assignment image={logoDevto} name={assignment.title}/>,
                     completion: (
                         <MDBox width="2rem" textAlign="right">
                             <TimelineItem

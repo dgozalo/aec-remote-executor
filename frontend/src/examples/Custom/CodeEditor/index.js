@@ -10,7 +10,6 @@ import {languageOptions} from "./constants/languageOptions";
 import useKeyPress from "./useKeyPress";
 import {defineTheme} from "./lib/defineTheme";
 import OutputDetails from "./components/OutputDetails";
-import MDAlert from "../../../components/MDAlert";
 import MDTypography from "../../../components/MDTypography";
 import {gql, useLazyQuery, useMutation} from "@apollo/client";
 import Card from "@mui/material/Card";

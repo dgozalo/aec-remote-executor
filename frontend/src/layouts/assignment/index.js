@@ -23,16 +23,11 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import MasterCard from "examples/Cards/MasterCard";
-import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
 // AssignmentInstructions page components
 import AssignmentInstructions from "./components/AssignmentInstructions";
 import CodeEditor from "../../examples/Custom/CodeEditor";
 import {useLocation, useNavigate} from "react-router-dom";
-import OutputWindow from "../../examples/Custom/CodeEditor/components/OutputWindow";
-import OutputDetails from "../../examples/Custom/CodeEditor/components/OutputDetails";
-import Card from "@mui/material/Card";
 import {useState} from "react";
 
 function Assignments() {
