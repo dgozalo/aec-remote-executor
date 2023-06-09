@@ -132,11 +132,10 @@ Output: [0,1]');
 INSERT INTO Assignment_Code_Templates (assignment_id, language, code) VALUES (1, 'Python', 'class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         pass');
-INSERT INTO Assignment_Code_Templates (assignment_id, language, code, test_runner_code) VALUES (1, 'java', 'class Solution {
+INSERT INTO Assignment_Code_Templates (assignment_id, language, code, test_runner_code) VALUES (1, 'java', '
     public int[] twoSum(int[] nums, int target) {
 
-    }
-}', '   public static void runTestCases(Solution solution, TestsRunner runner, String testsFilePath) {
+    }', '   public static void runTestCases(Solution solution, TestsRunner runner, String testsFilePath) {
         java.util.List<Test<int[], Integer, int[]>> tests = java.util.List.of(
                 new Test<>(new int[]{1, 2, 3}, 1, new int[]{1, 2}),
                 new Test<>(new int[]{1, 2, 3}, 2, new int[]{1, 2}),
