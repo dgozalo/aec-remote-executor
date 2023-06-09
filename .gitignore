@@ -24,6 +24,9 @@
 frontend/node_modules
 frontend/build
 frontend/yarn.lock
+frontend/.yarnrc
+frontend/.yarn
+frontend/yarn-error.log
 
 
 # Go workspace file
