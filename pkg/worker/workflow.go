@@ -7,14 +7,17 @@ import (
 	"time"
 )
 
+// Workflow is the struct that contains the Temporal workflow and the activity
 type Workflow struct {
 	activity *Activity
 }
 
+// NewWorkflow creates a new Workflow struct
 func NewWorkflow(activity *Activity) *Workflow {
 	return &Workflow{activity: activity}
 }
 
+// ExecutionWorkflow is the Workflow function that will be executed by Temporal when a new execution is received
 func (w Workflow) ExecutionWorkflow(ctx workflow.Context, execution model.NewExecution) (*ExecutionResult, error) {
 	options := workflow.ActivityOptions{
 		ScheduleToCloseTimeout: time.Minute * 3,

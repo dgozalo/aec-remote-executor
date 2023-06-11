@@ -12,14 +12,17 @@ import (
 	"strings"
 )
 
+// Activity is the struct that contains the Temporal activity information
 type Activity struct {
 	management *management.ManagementService
 }
 
+// NewActivity creates a new temporal activity
 func NewActivity(management *management.ManagementService) *Activity {
 	return &Activity{management: management}
 }
 
+// ExecutionActivity is the activity function that will compile and execute the code
 func (a Activity) ExecutionActivity(ctx context.Context, execution model.NewExecution) (*ExecutionResult, error) {
 	codeTemplate, err := a.management.GetAssignmentCodeTemplateForCode(execution.AssignmentID, execution.Language)
 	if err != nil {

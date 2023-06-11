@@ -8,10 +8,12 @@ import (
 	"os"
 )
 
+// PostgresDBAccess is the database access object
 type PostgresDBAccess struct {
 	DB *gorm.DB
 }
 
+// NewPostgresDBAccess creates a new database access object and initializes the connection to the database
 func NewPostgresDBAccess() (*PostgresDBAccess, error) {
 	dbURL := os.Getenv("POSTGRES_DB_CONNECT_STRING")
 	if dbURL == "" {

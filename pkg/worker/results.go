@@ -1,5 +1,6 @@
 package worker
 
+// ExecutionResult is the struct that contains the result of the execution
 type ExecutionResult struct {
 	Stdout          string
 	Stderr          string
@@ -7,6 +8,7 @@ type ExecutionResult struct {
 	TestsResults    []TestResult
 }
 
+// TestResult is the struct that contains the result of an assignment test
 type TestResult struct {
 	TestName string
 	Expected string

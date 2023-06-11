@@ -14,11 +14,16 @@ import (
 //go:embed TestRunner.java.tmpl
 var JavaTemplateFile string
 
+// TemplateData is the struct that contains the data to be used in the code template
 type TemplateData struct {
 	SubmittedCode  string
 	TestRunnerCode string
 }
 
+// RunCompile receives the code submitted by the user and the test runner code defined for this assignment
+// it then processes the Go template containing the Java file with the given code snippets.
+// It then compiles the Java code and runs the test runner code, which creates a file with the test results
+// that is then read and returned
 func RunCompile(submittedCode string, testRunnerCode string) (string, string, string, error) {
 	f, tmpDir, err := createTempJavaFile(submittedCode, testRunnerCode)
 	if err != nil {
@@ -85,9 +90,6 @@ func createTempJavaFile(submittedCode string, testRunnerCode string) (*os.File, 
 	if err != nil {
 		return nil, "", errors.Wrap(err, "error executing the java template")
 	}
-	//_, err = f.WriteString(JavaTemplateFile)
-	//if err != nil {
-	//	return nil, "", errors.Wrap(err, "error writing code contents to temporary java file")
-	//}
+
 	return f, tmpDir, nil
 }

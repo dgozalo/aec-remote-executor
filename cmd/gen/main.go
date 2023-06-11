@@ -9,6 +9,7 @@ import (
 	"log"
 )
 
+// main is the entrypoint of ORM Models generator
 func main() {
 	g := gen.NewGenerator(gen.Config{
 		OutPath: "../query",

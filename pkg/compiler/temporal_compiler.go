@@ -11,21 +11,25 @@ import (
 	"log"
 )
 
+// TemporalCompiler is the service that handles the temporal compiler
 type TemporalCompiler struct {
 	TemporalClient client.Client
 }
 
+// TemporalExecution is the struct that contains the temporal execution information
 type TemporalExecution struct {
 	WorkflowID string
 	RunID      string
 }
 
+// NewTemporalCompiler creates a new temporal compiler
 func NewTemporalCompiler(c client.Client) *TemporalCompiler {
 	return &TemporalCompiler{
 		TemporalClient: c,
 	}
 }
 
+// RunCompileWorker runs starts a mew Temporal Workflow that will compile and execute the code
 func (c TemporalCompiler) RunCompileWorker(execution model.NewExecution) TemporalExecution {
 	options := client.StartWorkflowOptions{
 		ID:        "executions-workflow",
@@ -43,6 +47,7 @@ func (c TemporalCompiler) RunCompileWorker(execution model.NewExecution) Tempora
 	}
 }
 
+// GetCompilationStatus retrieves the status of the compilation from the Temporal workflow
 func (c TemporalCompiler) GetCompilationStatus(execution *dbmodels.Execution) (*model.ExecutionResult, error) {
 	ctx := context.Background()
 	dwf, err := c.TemporalClient.DescribeWorkflowExecution(ctx, execution.WorkflowID, execution.RunID)
@@ -50,6 +55,7 @@ func (c TemporalCompiler) GetCompilationStatus(execution *dbmodels.Execution) (*
 		return nil, errors.Wrap(err, "there was a problem describing the workflow")
 	}
 	finished := dwf.WorkflowExecutionInfo.Status != v1.WORKFLOW_EXECUTION_STATUS_RUNNING
+	// If the workflow is not finished, we return the ExecutionStatusRunning status
 	if !finished {
 		return &model.ExecutionResult{
 			Status: model.ExecutionStatusRunning,
