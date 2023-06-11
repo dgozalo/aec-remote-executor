@@ -11,7 +11,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	ExecutionService  *executions.ExecutionService
-	ManagementService *management.ManagementService
-	TemporalCompiler  *compiler.TemporalCompiler
+	ExecutionService  *executions.ExecutionService  // This is the service that handles the executions
+	ManagementService *management.ManagementService // This is the service that handles the management
+	TemporalCompiler  *compiler.TemporalCompiler    // This is the compiler that handles the temporal compiler
 }

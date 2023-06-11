@@ -13,9 +13,10 @@ import (
 
 const ExecutionWorkflowName = "execution-workflow"
 
-type Worker struct {
-}
+// Worker is the struct that contains the Temporal worker
+type Worker struct{}
 
+// InitWorker initializes the Temporal worker and registers the workflows and activities
 func (r Worker) InitWorker() error {
 	temporalURL := os.Getenv("TEMPORALITE_HOST_PORT")
 	if temporalURL == "" {

@@ -10,16 +10,19 @@ import (
 	"strconv"
 )
 
+// ExecutionService is the service that handles the code executions of the application
 type ExecutionService struct {
 	*database.PostgresDBAccess
 }
 
+// NewExecutionService creates a new execution service
 func NewExecutionService(db *database.PostgresDBAccess) *ExecutionService {
 	return &ExecutionService{
 		db,
 	}
 }
 
+// CreateExecution creates a new execution in the database
 func (e ExecutionService) CreateExecution(input model.NewExecution, temporalExec compiler.TemporalExecution) (*dbmodels.Execution, error) {
 	i64Id, err := strconv.ParseInt(input.AssignmentID, 10, 32)
 	if err != nil {
@@ -40,6 +43,7 @@ func (e ExecutionService) CreateExecution(input model.NewExecution, temporalExec
 	return &execution, nil
 }
 
+// GetExecutions retrieves all the executions from the database
 func (e ExecutionService) GetExecutions() ([]dbmodels.Execution, error) {
 	var dbExecutions []dbmodels.Execution
 	result := e.DB.Find(&dbExecutions)
@@ -49,6 +53,7 @@ func (e ExecutionService) GetExecutions() ([]dbmodels.Execution, error) {
 	return dbExecutions, nil
 }
 
+// GetExecution retrieves a single execution from the database
 func (e ExecutionService) GetExecution(id string) (*dbmodels.Execution, error) {
 	i64Id, err := strconv.ParseInt(id, 10, 32)
 	if err != nil {

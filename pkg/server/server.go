@@ -19,6 +19,7 @@ import (
 
 const defaultPort = "8080"
 
+// RunServer runs the GraphQL server and Playground
 func RunServer() {
 	port := os.Getenv("PORT")
 	if port == "" {
