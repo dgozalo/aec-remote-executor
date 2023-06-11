@@ -6,8 +6,10 @@ services:
     restart: unless-stopped
     environment:
       - TEMPORALITE_HOST_PORT=temporalite:7233
+      - POSTGRES_DB_CONNECT_STRING=postgres://postgres:postgres@db:5432/aec_executor_dev?sslmode=disable
     depends_on:
     - worker
+    - db
     - temporalite
     - migrate
     ports:
@@ -69,13 +71,16 @@ services:
     restart: unless-stopped
     environment:
       - TEMPORALITE_HOST_PORT=temporalite:7233
+      - POSTGRES_DB_CONNECT_STRING=postgres://postgres:postgres@db:5432/aec_executor_dev?sslmode=disable
     depends_on:
       - temporalite
+      - db
 
   temporalite:
     build: "https://github.com/temporalio/temporalite.git"
     ports:
-      - "8233"
+      - "8233:8233"
+      - "7233:7233"
 volumes:
   postgres_data:
 
