@@ -183,7 +183,7 @@ function CodeEditor({assignment, setOutputDetails, outputDetails}) {
                         <Grid item xs={5} md={25}>
                             <Editor
                                 height={`45vh`}
-                                width={`95%`}
+                                width={`100%`}
                                 language={language?.value}
                                 theme={theme.value}
                                 defaultValue={code}
@@ -204,10 +204,10 @@ function CodeEditor({assignment, setOutputDetails, outputDetails}) {
                                     {processing ? "Processing..." : "Compile and Execute"}
                                 </button>
                             </Grid>
-                            <Grid item width={"124vh"}>
+                            <Grid item width={"97vh"} height={"30vh "}>
                                 <Card container id="assignments-card">
                                     <MDBox pt={1} px={3} >
-                                        <Grid item mb={17.5}>
+                                        <Grid item mb={4.5}>
                                             <OutputWindow outputDetails={outputDetails}/>
                                             {outputDetails && <OutputDetails outputDetails={outputDetails}/>}
                                         </Grid>
